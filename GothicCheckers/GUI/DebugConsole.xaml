@@ -1,0 +1,13 @@
+﻿<Window x:Class="GothicCheckers.GUI.DebugConsole"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Debug Console" Height="300" Width="500" WindowStyle="ToolWindow" Closing="Window_Closing"
+        FocusManager.FocusedElement="{Binding ElementName=txtCommand}">
+    <DockPanel>
+        <DockPanel DockPanel.Dock="Bottom" Margin="3">
+            <TextBlock VerticalAlignment="Center">Command> </TextBlock>
+            <TextBox Name="txtCommand" TabIndex="0" Margin="3 0" DockPanel.Dock="Left" Height="25" KeyDown="TextBox_KeyDown" />
+        </DockPanel>
+        <RichTextBox Name="txtConsole" DockPanel.Dock="Top" Margin="3 3 3 0" FontFamily="Courier New" IsReadOnly="True" IsReadOnlyCaretVisible="False" />
+    </DockPanel>
+</Window>
