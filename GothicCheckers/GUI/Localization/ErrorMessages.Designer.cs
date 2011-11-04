@@ -61,7 +61,16 @@ namespace GothicCheckers.GUI.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid move (maybe you can (and thus have to) jump?).
+        ///   Looks up a localized string similar to Error!.
+        /// </summary>
+        public static string CaptionError {
+            get {
+                return ResourceManager.GetString("CaptionError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid move (maybe you have to jump?)!.
         /// </summary>
         public static string InvalidMoveGeneric {
             get {
@@ -75,6 +84,15 @@ namespace GothicCheckers.GUI.Localization {
         public static string InvalidMoveNotEnoughPositions {
             get {
                 return ResourceManager.GetString("InvalidMoveNotEnoughPositions", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid save game file!.
+        /// </summary>
+        public static string InvalidSaveFile {
+            get {
+                return ResourceManager.GetString("InvalidSaveFile", resourceCulture);
             }
         }
         

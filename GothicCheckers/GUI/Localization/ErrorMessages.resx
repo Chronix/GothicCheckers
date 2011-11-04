@@ -117,11 +117,17 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CaptionError" xml:space="preserve">
+    <value>Error!</value>
+  </data>
   <data name="InvalidMoveGeneric" xml:space="preserve">
-    <value>Invalid move (maybe you can (and thus have to) jump?)</value>
+    <value>Invalid move (maybe you have to jump?)!</value>
   </data>
   <data name="InvalidMoveNotEnoughPositions" xml:space="preserve">
     <value>Invalid move, less than 2 positions specified!</value>
+  </data>
+  <data name="InvalidSaveFile" xml:space="preserve">
+    <value>Invalid save game file!</value>
   </data>
   <data name="WaitYourTurn" xml:space="preserve">
     <value>Wait your turn!</value>

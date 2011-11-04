@@ -13,7 +13,7 @@ namespace GothicCheckers
         
         public bool Reversed { get; set; }
 
-        public GameField ModifiedField { get; set; }
+        public GameField Capture { get; set; }
 
         public bool UpgradingMove
         {
@@ -48,7 +48,7 @@ namespace GothicCheckers
 
         public override string ToString()
         {
-            return string.Format("{0}: {1} {2} {3}", Player.ToString()[0], FromField.Representation, GameHistory.RIGHT_ARROW_SYMBOL, ToField.Representation);
+            return string.Format("{0}: {1} {2} {3}{4}", Player.ToString()[0], FromField.Representation, GameHistory.RIGHT_ARROW_SYMBOL, ToField.Representation, Forced ? " *" : "");
         }
 
         public SimpleMove Copy()

@@ -64,9 +64,6 @@ namespace GothicCheckers.GUI
             WriteLine("Gothic Checkers v" + GameManager.Version);
             WriteLine("For help, type help in the command line!");
             WriteLine();
-
-            MoveDebugWindow w = new MoveDebugWindow(manager);
-            w.Show();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

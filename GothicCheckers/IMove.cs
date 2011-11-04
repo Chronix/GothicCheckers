@@ -16,7 +16,7 @@ namespace GothicCheckers
         bool UpgradingMove { get; }
         int Length { get; }
 
-        GameField ModifiedField { get; set; }
+        GameField Capture { get; set; }
 
         IMove Reverse();
     }

@@ -138,7 +138,7 @@ namespace GothicCheckers
             return newBoard;
         }
 
-        public int TrueIndexOf(BoardPosition bp)
+        public static int TrueIndexOf(BoardPosition bp)
         {
             return BOARD_SIDE_SIZE * bp.Y + bp.X;
         }
@@ -184,10 +184,12 @@ namespace GothicCheckers
             DoMove(new SimpleMove(this[from].Occupation, from, to) { Reversed = reversed });
         }
 
-        public void DoMove(IMove move)
+        public void DoMove(IMove move, bool suppressRedraw = false)
         {
-            if (move is SimpleMove) DoSimpleMove((SimpleMove)move);
-            else DoCompoundMove((CompoundMove)move);
+            IEnumerable<int> changedIndices = null;
+
+            if (move is SimpleMove) changedIndices = DoSimpleMove((SimpleMove)move);
+            else changedIndices = DoCompoundMove((CompoundMove)move);
 
             if (!move.Forced)
             {
@@ -200,9 +202,11 @@ namespace GothicCheckers
                 if (move.Reversed) this[move.FromField].Piece = PieceType.Normal;
                 else this[move.ToField].Piece = PieceType.King;
             }
+
+            if (!suppressRedraw) OnVisualChanged(changedIndices);
         }
 
-        private void DoSimpleMove(SimpleMove move)
+        private IEnumerable<int> DoSimpleMove(SimpleMove move)
         {
             PieceType pType = this[move.FromField].Piece;
 
@@ -216,29 +220,37 @@ namespace GothicCheckers
                 if (move.Reversed)
                 {
                     BoardPosition mid = BoardPosition.GetPositionBetween(move.FromField, move.ToField);
-                    this[mid].Occupation = move.ModifiedField.Occupation;
-                    this[mid].Piece = move.ModifiedField.Piece;
+                    this[mid].Occupation = move.Capture.Occupation;
+                    this[mid].Piece = move.Capture.Piece;
                     changedIndices.Add(TrueIndexOf(mid));
                 }
                 else
                 {
                     BoardPosition mid = BoardPosition.GetPositionBetween(move.FromField, move.ToField);
-                    move.ModifiedField = this[mid].Copy();
+                    move.Capture = this[mid].Copy();
                     this[mid].Occupation = PlayerColor.None;
                     this[mid].Piece = PieceType.None;
                     changedIndices.Add(TrueIndexOf(mid));
+                    IdleMoves = 0;
                 }
             }
 
             this[move.ToField].Occupation = move.Player;
             this[move.ToField].Piece = pType;
 
-            OnVisualChanged(changedIndices);
+            return changedIndices;
         }
 
-        private void DoCompoundMove(CompoundMove move)
+        private IEnumerable<int> DoCompoundMove(CompoundMove move)
         {
-            foreach (var simpleMove in move.Moves) DoSimpleMove(simpleMove);
+            List<int> changedIndices = new List<int>();
+
+            foreach (var simpleMove in move.Moves)
+            {
+                changedIndices.AddRange(DoSimpleMove(simpleMove));
+            }
+
+            return changedIndices.Distinct();
         }
 
         private void OnVisualChanged(IEnumerable<int> indices)

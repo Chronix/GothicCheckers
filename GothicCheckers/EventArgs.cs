@@ -7,11 +7,11 @@ namespace GothicCheckers
 {
     public class VisualChangedEventArgs : EventArgs
     {
-        public int[] ChangedIndices { get; private set; }
+        public IEnumerable<int> ChangedIndices { get; private set; }
 
         public VisualChangedEventArgs(IEnumerable<int> changedIndices)
         {
-            ChangedIndices = changedIndices.ToArray();
+            ChangedIndices = changedIndices;
         }
     }
 }

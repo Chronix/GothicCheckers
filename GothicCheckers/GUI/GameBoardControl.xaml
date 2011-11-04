@@ -16,10 +16,11 @@
         <RectangleGeometry x:Key="SelectionBounds" Rect="0,0 100,100" />
         <RectangleGeometry x:Key="SquareSelectionGeometry" Rect="0,0 100,100" />
         
-        <Pen x:Key="SelectionPen" Brush="Red" Thickness="8"/>
+        <Pen x:Key="SelectionPen" Brush="Red" Thickness="8" />
+        <Pen x:Key="MultiSelectionPen" Brush="Orange" Thickness="8" />
 
-        <SolidColorBrush x:Key="WhiteSquareBackgroundBrush" Color="#d2d2d2"/>
-        <SolidColorBrush x:Key="BlackSquareBackgroundBrush" Color="#6e6e6e"/>
+        <SolidColorBrush x:Key="WhiteSquareBackgroundBrush" Color="#d2d2d2" />
+        <SolidColorBrush x:Key="BlackSquareBackgroundBrush" Color="#6e6e6e" />
 
         <DrawingBrush x:Key="SquareSelectionBrush" Stretch="Uniform">
             <DrawingBrush.Drawing>
@@ -32,6 +33,16 @@
             </DrawingBrush.Drawing>
         </DrawingBrush>
 
+        <DrawingBrush x:Key="SquareMultiSelectionBrush" Stretch="Uniform">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Geometry="{StaticResource SelectionBounds}" Brush="Transparent"/>
+                        <GeometryDrawing Geometry="{StaticResource SquareSelectionGeometry}" Pen="{StaticResource MultiSelectionPen}"/>
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
 
         <Style x:Key="BoardRectStyle" TargetType="Rectangle">
             <Setter Property="Fill">
@@ -58,10 +69,10 @@
             <Setter Property="HorizontalAlignment" Value="Center"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
         </Style>
-        <Style x:Key="BlackPieceStyle" TargetType="Ellipse">
+        <Style x:Key="BlackPieceStyle" TargetType="Shape">
             <Setter Property="Fill" Value="Black" />
         </Style>
-        <Style x:Key="WhitePieceStyle" TargetType="Ellipse">
+        <Style x:Key="WhitePieceStyle" TargetType="Shape">
             <Setter Property="Fill" Value="White" />
         </Style>
     </UserControl.Resources>
@@ -70,11 +81,11 @@
             <Canvas Canvas.Left="30" Name="boardCanvas" Width="800" Height="800" MouseDown="boardCanvas_MouseDown">
                 <Rectangle Style="{StaticResource BoardRectStyle}" Width="{Binding ElementName=boardCanvas, Path=Width, Mode=OneTime}" Height="{Binding ElementName=boardCanvas, Path=Height, Mode=OneTime}" />
                 <Canvas Width="{Binding ElementName=boardCanvas, Path=Width, Mode=OneTime}" Height="{Binding ElementName=boardCanvas, Path=Height, Mode=OneTime}" Name="selectionLayer">
-                    <Rectangle Width="100" Height="100" Name="squareSelection" Fill="{StaticResource SquareSelectionBrush}" Visibility="Hidden">
+                    <!--<Rectangle Width="100" Height="100" Name="squareSelection" Fill="{StaticResource SquareSelectionBrush}" Visibility="Hidden">
                         <Rectangle.RenderTransform>
                             <TranslateTransform />
                         </Rectangle.RenderTransform>
-                    </Rectangle>
+                    </Rectangle>-->
                 </Canvas>
                 <Canvas Name="pieceCanvas" Width="{Binding ElementName=boardCanvas, Path=Width, Mode=OneTime}" Height="{Binding ElementName=boardCanvas, Path=Height, Mode=OneTime}" />
             </Canvas>

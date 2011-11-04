@@ -45,6 +45,9 @@
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        <Style TargetType="ListBoxItem" x:Key="HistoryItem">
+            <EventSetter Event="Selected" Handler="HistoryItem_Click" />
+        </Style>
     </Window.Resources>
     <Window.CommandBindings>
         <CommandBinding Command="New" Executed="Command_Execute_New" />
@@ -109,9 +112,7 @@
             <StackPanel Grid.Column="1" Orientation="Vertical">
                 <GroupBox Header="{x:Static Localization:MainWindowStrings.GroupBox_MoveHistory}" Margin="5 0 5 5">
                     <StackPanel Orientation="Vertical">
-                        <ListBox Margin="5 5 5 5" Height="300" ItemsSource="{Binding MoveHistory}" x:Name="lbHistory">
-                            
-                        </ListBox>
+                        <ListBox Margin="5 5 5 5" Height="300" ItemsSource="{Binding History}" ItemContainerStyle="{StaticResource HistoryItem}" x:Name="lbHistory" />
                         <Button Content="{x:Static Localization:MainWindowStrings.Button_PauseGame}" Margin="5 0" Command="{StaticResource TogglePauseModeCommand}" />
                     </StackPanel>
                 </GroupBox>

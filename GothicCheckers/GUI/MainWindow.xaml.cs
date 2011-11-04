@@ -21,7 +21,7 @@ namespace GothicCheckers.GUI
     public partial class MainWindow : Window
     {
         private GameManager _manager;
-        private DebugConsole _debugConsole;        
+        private DebugConsole _debugConsole; 
 
         public GameManager GameManager
         {
@@ -41,21 +41,47 @@ namespace GothicCheckers.GUI
         #region MAIN MENU COMMAND HANDLERS
         private void Command_Execute_New(object sender, ExecutedRoutedEventArgs args)
         {
-            _manager.Reset();
-            GameSettingsWindow gsw = new GameSettingsWindow(_manager);
-            gsw.Owner = this;
-            gsw.ShowDialog();
+            //_manager.Reset();
+            //GameSettingsWindow gsw = new GameSettingsWindow(_manager);
+            //gsw.Owner = this;
+            //gsw.ShowDialog();
         }
 
         private void Command_Execute_Load(object sender, ExecutedRoutedEventArgs args)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Filter = "Saved games (.xml)|*.xml";
+            ofd.CheckFileExists = true;
+            ofd.Multiselect = false;
+
+            if (ofd.ShowDialog().Value)
+            {
+                _manager.Reset();
+
+                try
+                {
+                    SaveLoadManager.LoadGame(ofd.FileName, ref _manager);
+                }
+                catch
+                {
+                    MessageBox.Show(Localization.ErrorMessages.InvalidSaveFile, Localization.ErrorMessages.CaptionError, MessageBoxButton.OK, MessageBoxImage.Error);
+                }
+
+                _manager.PlayHistory();
+                MainGameBoard.FullRedraw();
+            }
         }
 
         private void Command_Execute_Save(object sender, ExecutedRoutedEventArgs args)
         {
-            
+            SaveFileDialog sfd = new SaveFileDialog();
+            sfd.Filter = "Saved Games (.xml)|*.xml";
+            sfd.AddExtension = true;
+
+            if (sfd.ShowDialog().Value)
+            {
+                SaveLoadManager.SaveGame(sfd.FileName, _manager);
+            }
         }
 
         private void Command_Execute_Exit(object sender, ExecutedRoutedEventArgs args)
@@ -173,6 +199,13 @@ namespace GothicCheckers.GUI
         private void Command_CanExecute_StopGameReplay(object sender, CanExecuteRoutedEventArgs args)
         {
             args.CanExecute = _manager.ReplayState == GameReplayState.Playing || _manager.ReplayState == GameReplayState.Paused;
+        }
+        #endregion
+
+        #region EVENT HANDLERS
+        private void HistoryItem_Click(object sender, RoutedEventArgs args)
+        {
+            
         }
         #endregion
 

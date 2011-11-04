@@ -195,6 +195,7 @@ namespace GothicCheckers
                     if (!foundEnemy)
                     {
                         foundEnemy = true; //na dalsim poli v ceste je nepratelsky kamen
+                        target = board[target.Position.X + xDir, target.Position.Y + yDir];
                         continue;
                     }
                     else break;

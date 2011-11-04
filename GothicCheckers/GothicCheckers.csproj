@@ -99,9 +99,6 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>GameSettingsWindowStrings.resx</DependentUpon>
     </Compile>
-    <Compile Include="GUI\MoveDebugWindow.xaml.cs">
-      <DependentUpon>MoveDebugWindow.xaml</DependentUpon>
-    </Compile>
     <Compile Include="GUI\Utilities\FieldColorConverter.cs" />
     <Compile Include="GUI\Utilities\OccupationColorConverter.cs" />
     <Compile Include="GUI\Utilities\ParameterEqualityConverter.cs" />
@@ -177,10 +174,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="GUI\MainWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="GUI\MoveDebugWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -5,6 +5,7 @@ using System.Text;
 
 namespace GothicCheckers
 {
+    [Serializable]
     public class InvalidMoveException : Exception
     {
         public InvalidMoveException(string message)

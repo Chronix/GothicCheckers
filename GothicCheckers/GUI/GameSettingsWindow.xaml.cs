@@ -41,7 +41,7 @@ namespace GothicCheckers.GUI
         {
             IntPtr wnd = new WindowInteropHelper(this).Handle;
             int winStyle = GetWindowLong(wnd, GW_STYLE);
-            winStyle = winStyle & WS_REMOVE_MAXIMIZEBOX;
+            winStyle &= WS_REMOVE_MAXIMIZEBOX;
             SetWindowLong(wnd, GW_STYLE, winStyle);
         }
 

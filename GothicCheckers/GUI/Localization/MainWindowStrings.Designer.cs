@@ -79,6 +79,15 @@ namespace GothicCheckers.GUI.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Initial Game State.
+        /// </summary>
+        public static string GameHistory_InitialState {
+            get {
+                return ResourceManager.GetString("GameHistory_InitialState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Move History.
         /// </summary>
         public static string GroupBox_MoveHistory {

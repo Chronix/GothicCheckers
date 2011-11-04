@@ -12,5 +12,13 @@ namespace GothicCheckers
         {
             foreach (T item in items) coll.Add(item);
         }
+
+        public static void OnIndices<T>(this IList<T> list, Action<T> action, IEnumerable<int> indices) where T : class
+        {
+            foreach (int i in indices)
+            {
+                action(list[i]);
+            }
+        }
     }
 }

@@ -75,6 +75,7 @@ namespace GothicCheckers
         public void DoMove(bool addToHistory, params string[] positions)
         {
             ExceptionProvider.ThrowIfNull(positions, GUI.Localization.ErrorMessages.InvalidMoveNotEnoughPositions);
+            ExceptionProvider.ThrowInvalidMoveIf(positions.Length < 2, string.Empty);
             IMove move = null;
 
             if (positions.Length == 2)
@@ -83,13 +84,15 @@ namespace GothicCheckers
             }
             else
             {
-                move = CompoundMove.FromPositions(_board[positions[0]].Occupation, positions[0], positions.Last(), positions.TakeWhile((pos, i) => i > 0 && i < positions.Length - 1).ToArray());
+                move = CompoundMove.FromPositions(_board[positions[0]].Occupation, positions[0], positions.Last(), positions.Where((pos, i) => i > 0 && i < positions.Length - 1).ToArray());
             }
 
             ExceptionProvider.ThrowInvalidMoveIf(!IsPlayersTurn(move.Player), GUI.Localization.ErrorMessages.WaitYourTurn);
 
+#if DEBUG
             LastTurnValidMoves.Clear();
             LastTurnValidMoves.AddRange(RuleEngine.GetAllMovesForPlayer(_board, move.Player));
+#endif
 
             ExceptionProvider.ThrowInvalidMoveIf(!RuleEngine.ValidateMove(_board, move), GUI.Localization.ErrorMessages.InvalidMoveGeneric);
 
@@ -100,6 +103,11 @@ namespace GothicCheckers
             {
                 History.Add(move);
             }
+        }
+
+        public void PlayHistory()
+        {
+            foreach (var move in History) _board.DoMove(move, true);
         }
 
         private void SwapPlayers()

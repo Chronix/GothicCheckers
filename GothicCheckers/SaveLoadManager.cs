@@ -39,17 +39,29 @@ namespace GothicCheckers
                     w.WriteStartElement("Move");
                     w.WriteAttributeString("Player", move.Player.ToString());
 
-                    if (move is CompoundMove) w.WriteAttributeString("Through", ((CompoundMove)move).GetMidFieldsSaveString());
-
                     w.WriteAttributeString("From", move.FromField.Representation);
                     w.WriteAttributeString("To", move.ToField.Representation);
+                    
+                    if (move is CompoundMove) w.WriteAttributeString("Through", ((CompoundMove)move).GetMidFieldsSaveString());
 
-                    if (move.ModifiedField != null)
+                    if (move is SimpleMove && move.Capture != null)
                     {
-                        w.WriteStartElement("ModField");
-                        w.WriteAttributeString("Position", move.ModifiedField.Position.Representation);
-                        w.WriteAttributeString("Piece", move.ModifiedField.Piece.ToString());
+                        w.WriteStartElement("Capture");
+                        w.WriteAttributeString("Position", move.Capture.Position.Representation);
+                        w.WriteAttributeString("Piece", move.Capture.Piece.ToString());
                         w.WriteEndElement(); // ModField
+                    }
+                    else if (move is CompoundMove)
+                    {
+                        List<GameField> modFields = new List<GameField>(((CompoundMove)move).Moves.Select(sm => sm.Capture));
+
+                        foreach (GameField field in modFields)
+                        {
+                            w.WriteStartElement("Capture");
+                            w.WriteAttributeString("Position", field.Position.Representation);
+                            w.WriteAttributeString("Piece", field.Piece.ToString());
+                            w.WriteEndElement(); // ModField
+                        }
                     }
 
                     w.WriteEndElement(); // Move
@@ -59,15 +71,15 @@ namespace GothicCheckers
             }
         }
 
-        public static void LoadGame(string filePath, GameManager manager)
+        public static void LoadGame(string filePath, ref GameManager manager)
         {
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(filePath);
 
-            XmlNode diffNode = xDoc.SelectSingleNode("GameSettings/Difficulty");
-            XmlNode ctrlNode = xDoc.SelectSingleNode("GameSettings/Control");
+            XmlNode diffNode = xDoc.SelectSingleNode("//GameSettings/Difficulty");
+            XmlNode ctrlNode = xDoc.SelectSingleNode("//GameSettings/Control");
 
-            XmlNodeList moveNodes = xDoc.SelectNodes("Moves/Turn");
+            XmlNodeList moveNodes = xDoc.SelectNodes("//Moves/Move");
 
             GameManager.WhiteDifficulty = (GameDifficulty)Enum.Parse(typeof(GameDifficulty), diffNode.Attributes["White"].Value);
             GameManager.BlackDifficulty = (GameDifficulty)Enum.Parse(typeof(GameDifficulty), diffNode.Attributes["Black"].Value);
@@ -95,7 +107,7 @@ namespace GothicCheckers
 
                 if (moveNode.HasChildNodes)
                 {
-                    move.ModifiedField = new GameField
+                    move.Capture = new GameField
                     {
                         Occupation = player == PlayerColor.Black ? PlayerColor.White : PlayerColor.Black,
                         Position = new BoardPosition(moveNode.FirstChild.Attributes["Position"].Value),

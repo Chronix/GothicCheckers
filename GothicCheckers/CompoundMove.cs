@@ -34,10 +34,10 @@ namespace GothicCheckers
 
         public bool Reversed { get; set; }
 
-        GameField IMove.ModifiedField
+        GameField IMove.Capture
         {
-            get { throw new NotSupportedException(); }
-            set { throw new NotSupportedException(); }
+            get { return null; }
+            set { return; }
         }
 
         public bool UpgradingMove
@@ -86,6 +86,7 @@ namespace GothicCheckers
             }
 
             sb.Append(Moves.Last().ToField.Representation);
+            sb.Append(" *");
             return sb.ToString();
         }
 
@@ -93,7 +94,7 @@ namespace GothicCheckers
         {
             string s = string.Empty;
 
-            for (int i = 1; i < Moves.Count - 1; ++i)
+            for (int i = 1; i < Moves.Count; ++i)
             {
                 s += Moves[i].FromField.Representation;
             }
@@ -120,7 +121,7 @@ namespace GothicCheckers
             SimpleMove[] moves = new SimpleMove[through.Length + 1];
             moves[0] = new SimpleMove(player, from, through[0]);
 
-            for (int i = 1; i < through.Length - 1; ++i)
+            for (int i = 1; i < through.Length; ++i)
             {
                 moves[i] = new SimpleMove(player, through[i - 1], through[i]);
             }

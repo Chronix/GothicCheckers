@@ -19,13 +19,17 @@ namespace GothicCheckers.GUI
     /// </summary>
     public partial class GameBoardControl : UserControl
     {
-        private Ellipse[] _pieces;
+        private GameManager _manager;
+
+        private Ellipse[] _normalPieces;
+        private Rectangle[] _kingPieces;
+        private Rectangle[] _selectionRects;
         private int _pieceSize;
         private int _squareSize;
-        private GameManager _manager;
 
         private bool _haveSelection;
         private List<BoardPosition> _movePositions;
+        private List<int> _activeSelections;
 
         public GameManager Manager
         {
@@ -34,47 +38,61 @@ namespace GothicCheckers.GUI
             {
                 _manager = value;
                 _manager.Board.VisualChanged += new EventHandler<VisualChangedEventArgs>(BoardVisualChanged);
-                FullRedraw();
+                Initialize();
             }
         }
 
         public GameBoardControl()
         {
             InitializeComponent();
-            _pieces = new Ellipse[GameBoard.BOARD_PIECE_COUNT];
+            _normalPieces = new Ellipse[GameBoard.BOARD_PIECE_COUNT];
+            _kingPieces = new Rectangle[GameBoard.BOARD_PIECE_COUNT];
+            _selectionRects = new Rectangle[GameBoard.BOARD_PIECE_COUNT];
             _pieceSize = (int)((boardCanvas.Width / GameBoard.BOARD_SIDE_SIZE) - (boardCanvas.Width / 50));
             _squareSize = (int)((boardCanvas.Width / GameBoard.BOARD_SIDE_SIZE));
             _movePositions = new List<BoardPosition>();
+            _activeSelections = new List<int>();
         }
 
         private void boardCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            Point p = e.GetPosition(boardCanvas);
+            int pos = ((int)p.Y / _squareSize) * GameBoard.BOARD_SIDE_SIZE + ((int)p.X / _squareSize);
+
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                Point p = e.GetPosition(boardCanvas);
-                int pos = ((int)p.Y / _squareSize) * GameBoard.BOARD_SIDE_SIZE + ((int)p.X / _squareSize);
-                SelectSquare(pos);
+                SelectSquare(pos, false);
+            }
+            else if (e.RightButton == MouseButtonState.Pressed)
+            {
+                SelectSquare(pos, true);
             }
         }
 
-        private void SelectSquare(int pos)
+        private void SelectSquare(int pos, bool multi)
         {
             if (pos < 0 || pos >= GameBoard.BOARD_PIECE_COUNT) return;
-            if ((_manager.CurrentPlayer != _manager.Board.PlayerAt(pos) && !_haveSelection) || (_manager.Board.PlayerAt(pos) == PlayerColor.None && !_haveSelection )) return;
+            if (_manager.Board.PlayerAt(pos) == PlayerColor.None && !_haveSelection)
+            {
+                if (!multi && _selectionRects[pos].Visibility != System.Windows.Visibility.Visible) return;
+            }
 
             if (_haveSelection)
             {
-                squareSelection.Visibility = System.Windows.Visibility.Hidden;
+                _selectionRects.OnIndices(rect => rect.Visibility = System.Windows.Visibility.Hidden, _activeSelections);
+                _activeSelections.Clear();
 
                 _movePositions.Add(new BoardPosition(pos));
 
                 try
                 {
-                    _manager.DoMove(true, _movePositions.Select(p => p.Representation).ToArray());
+                    string[] positions = _movePositions.Select(p => p.Representation).Distinct().ToArray();
+
+                    _manager.DoMove(true, positions);
                 }
                 catch (InvalidMoveException e)
                 {
-                    MessageBox.Show(e.Message, "Invalid move!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+                    if (!string.IsNullOrEmpty(e.Message)) MessageBox.Show(e.Message, "Invalid move!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
                 }
 
                 _movePositions.Clear();
@@ -83,75 +101,119 @@ namespace GothicCheckers.GUI
             }
             else
             {
-                DrawSelection(pos);
+                DrawSelection(pos, multi);
                 _movePositions.Add(new BoardPosition(pos));
-                _haveSelection = true;
+                _haveSelection = !multi;
             }
         }
 
-        private void FullRedraw()
+        private void Initialize()
         {
             if (_manager.Board == null) return;
 
             for (int i = 0; i < GameBoard.BOARD_PIECE_COUNT; ++i)
             {
-                _pieces[i] = new Ellipse();
-                _pieces[i].RenderTransform = new TranslateTransform();
-                _pieces[i].Width = _pieces[i].Height = _pieceSize;
+                _normalPieces[i] = new Ellipse();
+                _normalPieces[i].RenderTransform = new TranslateTransform();
+                _normalPieces[i].Width = _normalPieces[i].Height = _pieceSize;
+                
+                _kingPieces[i] = new Rectangle();
+                _kingPieces[i].RenderTransform = new TranslateTransform();
+                _kingPieces[i].Width = _kingPieces[i].Height = _pieceSize;
+                _kingPieces[i].Visibility = System.Windows.Visibility.Hidden;
+
+                _selectionRects[i] = new Rectangle();
+                _selectionRects[i].RenderTransform = new TranslateTransform();
+                _selectionRects[i].Width = _selectionRects[i].Height = _squareSize;
+                _selectionRects[i].Visibility = System.Windows.Visibility.Hidden;
 
                 if (_manager.Board[i].Occupation == PlayerColor.None)
                 {
-                    _pieces[i].Visibility = System.Windows.Visibility.Hidden;
+                    _normalPieces[i].Visibility = System.Windows.Visibility.Hidden;
                 }
                 else
                 {
-                    _pieces[i].Visibility = System.Windows.Visibility.Visible;
+                    _normalPieces[i].Visibility = System.Windows.Visibility.Visible;
 
                     if (_manager.Board[i].Occupation == PlayerColor.Black)
                     {
-                        _pieces[i].Style = (Style)FindResource("BlackPieceStyle");
+                        _normalPieces[i].Style = (Style)FindResource("BlackPieceStyle");
                     }
                     else
                     {
-                        _pieces[i].Style = (Style)FindResource("WhitePieceStyle");
+                        _normalPieces[i].Style = (Style)FindResource("WhitePieceStyle");
                     }
                 }
 
-                (_pieces[i].RenderTransform as TranslateTransform).X = (i % GameBoard.BOARD_SIDE_SIZE) * _squareSize + (boardCanvas.Width / 75);
-                (_pieces[i].RenderTransform as TranslateTransform).Y = (i / GameBoard.BOARD_SIDE_SIZE) * _squareSize + (boardCanvas.Width / 75);
-                pieceCanvas.Children.Add(_pieces[i]);
+                ((TranslateTransform)_normalPieces[i].RenderTransform).X = (i % GameBoard.BOARD_SIDE_SIZE) * _squareSize + (boardCanvas.Width / 75);
+                ((TranslateTransform)_normalPieces[i].RenderTransform).Y = (i / GameBoard.BOARD_SIDE_SIZE) * _squareSize + (boardCanvas.Width / 75);
+
+                ((TranslateTransform)_kingPieces[i].RenderTransform).X = (i % GameBoard.BOARD_SIDE_SIZE) * _squareSize + (boardCanvas.Width / 75);
+                ((TranslateTransform)_kingPieces[i].RenderTransform).Y = (i / GameBoard.BOARD_SIDE_SIZE) * _squareSize + (boardCanvas.Width / 75);
+
+                ((TranslateTransform)_selectionRects[i].RenderTransform).X = (i % GameBoard.BOARD_SIDE_SIZE) * _squareSize;
+                ((TranslateTransform)_selectionRects[i].RenderTransform).Y = (i / GameBoard.BOARD_SIDE_SIZE) * _squareSize;
+
+                pieceCanvas.Children.Add(_normalPieces[i]);
+                pieceCanvas.Children.Add(_kingPieces[i]);
+                boardCanvas.Children.Add(_selectionRects[i]);
             }
         }
 
-        private void Redraw(int[] where)
+        public void FullRedraw()
+        {
+            Redraw(Enumerable.Range(0, GameBoard.BOARD_PIECE_COUNT));
+        }
+
+        public void Redraw(IEnumerable<int> where)
         {
             foreach (int i in where)
             {
                 if (_manager.Board[i].Occupation == PlayerColor.None)
                 {
-                    _pieces[i].Visibility = System.Windows.Visibility.Hidden;
+                    _normalPieces[i].Visibility = System.Windows.Visibility.Hidden;
+                    _kingPieces[i].Visibility = System.Windows.Visibility.Hidden;
                 }
                 else
                 {
-                    _pieces[i].Visibility = System.Windows.Visibility.Visible;
+                    if (_manager.Board[i].Piece == PieceType.Normal)
+                    {
+                        _normalPieces[i].Visibility = System.Windows.Visibility.Visible;
 
-                    if (_manager.Board[i].Occupation == PlayerColor.Black)
-                    {
-                        _pieces[i].Style = (Style)FindResource("BlackPieceStyle");
+                        if (_manager.Board[i].Occupation == PlayerColor.Black)
+                        {
+                            _normalPieces[i].Style = (Style)FindResource("BlackPieceStyle");
+                        }
+                        else
+                        {
+                            _normalPieces[i].Style = (Style)FindResource("WhitePieceStyle");
+                        }
                     }
-                    else
+                    else if (_manager.Board[i].Piece == PieceType.King)
                     {
-                        _pieces[i].Style = (Style)FindResource("WhitePieceStyle");
+                        _normalPieces[i].Visibility = System.Windows.Visibility.Hidden;
+                        _kingPieces[i].Visibility = System.Windows.Visibility.Visible;
+
+                        if (_manager.Board[i].Occupation == PlayerColor.Black)
+                        {
+                            _kingPieces[i].Style = (Style)FindResource("BlackPieceStyle");
+                        }
+                        else
+                        {
+                            _kingPieces[i].Style = (Style)FindResource("WhitePieceStyle");
+                        }
                     }
                 }
             }
         }
 
-        private void DrawSelection(int pos)
+        private void DrawSelection(int pos, bool multi)
         {
-            (squareSelection.RenderTransform as TranslateTransform).X = (pos % GameBoard.BOARD_SIDE_SIZE) * _squareSize;
-            (squareSelection.RenderTransform as TranslateTransform).Y = (pos / GameBoard.BOARD_SIDE_SIZE) * _squareSize;
-            squareSelection.Visibility = System.Windows.Visibility.Visible;
+            if (!multi) _selectionRects[pos].Fill = (DrawingBrush)FindResource("SquareSelectionBrush");
+            else _selectionRects[pos].Fill = (DrawingBrush)FindResource("SquareMultiSelectionBrush");
+
+            _selectionRects[pos].Visibility = System.Windows.Visibility.Visible;
+            _activeSelections.Add(pos);
         }
 
         private void BoardVisualChanged(object sender, VisualChangedEventArgs e)
