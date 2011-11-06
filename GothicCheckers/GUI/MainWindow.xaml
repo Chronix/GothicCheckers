@@ -68,6 +68,11 @@
     </Window.CommandBindings>
     <DockPanel LastChildFill="True">
         <Menu DockPanel.Dock="Top" HorizontalAlignment="Stretch" x:Name="mainMenu" VerticalAlignment="Top">
+            <Menu.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <DockPanel HorizontalAlignment="Stretch"/>
+                </ItemsPanelTemplate>
+            </Menu.ItemsPanel>
             <MenuItem Header="{x:Static Localization:MainWindowStrings.MainMenu_Game}" x:Name="miGame">
                 <MenuItem Header="{x:Static Localization:MainWindowStrings.MainMenu_Game_NewGame}" Command="New" />
                 <MenuItem Header="{x:Static Localization:MainWindowStrings.MainMenu_Game_LoadGame}" Command="Open" />
@@ -77,8 +82,6 @@
                 <MenuItem Header="{x:Static Localization:MainWindowStrings.MainMenu_Game_Exit}" Command="{StaticResource ExitCommand}" />
             </MenuItem>
             <MenuItem Header="{x:Static Localization:MainWindowStrings.MainMenu_Edit}">
-                <MenuItem Header="{x:Static Localization:MainWindowStrings.MainMenu_Edit_ShowDebugConsole}" Command="{StaticResource ShowDebugConsoleCommand}" />
-                <Separator />
                 <MenuItem Header="{x:Static Localization:MainWindowStrings.MainMenu_Edit_Language}">
                     <MenuItem Header="{x:Static Localization:MainWindowStrings.MainMenu_Edit_Language_English}" Command="{StaticResource LanguageSwitchCommand}" Tag="en-US" />
                     <MenuItem Header="{x:Static Localization:MainWindowStrings.MainMenu_Edit_Language_Czech}" Command="{StaticResource LanguageSwitchCommand}" Tag="cs-CZ" />
@@ -97,9 +100,13 @@
                 <Separator />
                 <MenuItem Header="{x:Static Localization:MainWindowStrings.MainMenu_Help_About}" Command="Help" CommandParameter="about" />
             </MenuItem>
+            <MenuItem Header="Debug" HorizontalAlignment="Right">
+                <MenuItem Header="{x:Static Localization:MainWindowStrings.MainMenu_Edit_ShowDebugConsole}" Command="{StaticResource ShowDebugConsoleCommand}" />
+                <MenuItem Header="Force Full Redraw" Click="MenuItem_Click" />
+            </MenuItem>
         </Menu>
         <StatusBar DockPanel.Dock="Bottom" Height="23" VerticalAlignment="Bottom">
-
+            <TextBlock x:Name="tbCurrentPlayer" />
         </StatusBar>
         <Grid DockPanel.Dock="Top">
             <Grid.ColumnDefinitions>

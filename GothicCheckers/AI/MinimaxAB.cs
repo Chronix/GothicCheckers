@@ -9,6 +9,9 @@ namespace GothicCheckers.AI
 {
     public class MinimaxAB : AIEngine
     {
+        private const int INFINITY = 10000000;
+        private const int LOT = 8000 * Evaluator.N;
+
         protected override IMove GetBestMove(object oState)
         {
             CTS.Token.ThrowIfCancellationRequested();
@@ -16,7 +19,7 @@ namespace GothicCheckers.AI
 
             int bestIndex = 0;
             int value = 0;
-            int alpha = int.MinValue;
+            int alpha = -INFINITY;
 
             List<IMove> moves = new List<IMove>(RuleEngine.GetAllMovesForPlayer(state.Board, state.Player));
             CTS.Token.ThrowIfCancellationRequested();
@@ -28,10 +31,11 @@ namespace GothicCheckers.AI
             for (int i = 0; i < moves.Count; ++i)
             {
                 CTS.Token.ThrowIfCancellationRequested();
-                workBoard.DoMove(moves[i]);
+                workBoard.DoMove(moves[i], true);
                 PlayerColor nextPlayer = GameUtils.OtherPlayer(state.Player);
-                value = -Minimax(workBoard, nextPlayer, state.Depth, int.MinValue, -alpha);
-                workBoard.DoMove(moves[i].Reverse());
+                value = -Minimax(workBoard, nextPlayer, state.Depth, alpha, Winning(-alpha));
+                value = Losing(value);
+                workBoard.DoMove(moves[i].Reverse(), true);
 
                 if (value > alpha)
                 {
@@ -55,15 +59,21 @@ namespace GothicCheckers.AI
                 return int.MinValue; // vyhral ten, co tahl naposledy, ne aktualni hrac
             }
 
+            if (depth == 0)
+            {
+                return Evaluator.Evaluate(board, player);
+            }
+
             var moves = RuleEngine.GetAllMovesForPlayer(board, player);
 
             foreach (IMove move in moves)
             {
                 CTS.Token.ThrowIfCancellationRequested();
-                board.DoMove(move);
+                board.DoMove(move, true);
                 PlayerColor nextPlayer = GameUtils.OtherPlayer(player);
                 value = -Minimax(board, nextPlayer, depth - 1, -beta, -alpha);
-                board.DoMove(move.Reverse());
+                value = Losing(value);
+                board.DoMove(move.Reverse(), true);
 
                 if (value > alpha)
                 {
@@ -77,6 +87,20 @@ namespace GothicCheckers.AI
             }
 
             return alpha;
+        }
+
+        private int Winning(int val)
+        {
+            if (val > LOT) return val + Evaluator.N;
+            if (val < -LOT) return val - Evaluator.N;
+            return val;
+        }
+
+        private int Losing(int val)
+        {
+            if (val > LOT) return val - Evaluator.N;
+            if (val < -LOT) return val + Evaluator.N;
+            return val;
         }
     }
 }

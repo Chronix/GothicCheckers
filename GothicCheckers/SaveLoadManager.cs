@@ -34,7 +34,7 @@ namespace GothicCheckers
 
                 w.WriteStartElement("Moves");
 
-                foreach (IMove move in manager.History)
+                foreach (IMove move in manager.History.Skip(1))
                 {
                     w.WriteStartElement("Move");
                     w.WriteAttributeString("Player", move.Player.ToString());
@@ -49,7 +49,7 @@ namespace GothicCheckers
                         w.WriteStartElement("Capture");
                         w.WriteAttributeString("Position", move.Capture.Position.Representation);
                         w.WriteAttributeString("Piece", move.Capture.Piece.ToString());
-                        w.WriteEndElement(); // ModField
+                        w.WriteEndElement(); // Capture
                     }
                     else if (move is CompoundMove)
                     {
@@ -60,7 +60,7 @@ namespace GothicCheckers
                             w.WriteStartElement("Capture");
                             w.WriteAttributeString("Position", field.Position.Representation);
                             w.WriteAttributeString("Piece", field.Piece.ToString());
-                            w.WriteEndElement(); // ModField
+                            w.WriteEndElement(); // Capture
                         }
                     }
 
@@ -107,12 +107,29 @@ namespace GothicCheckers
 
                 if (moveNode.HasChildNodes)
                 {
-                    move.Capture = new GameField
+                    if (move is SimpleMove)
                     {
-                        Occupation = player == PlayerColor.Black ? PlayerColor.White : PlayerColor.Black,
-                        Position = new BoardPosition(moveNode.FirstChild.Attributes["Position"].Value),
-                        Piece = (PieceType)Enum.Parse(typeof(PieceType),moveNode.FirstChild.Attributes["Piece"].Value)
-                    };
+                        move.Capture = new GameField
+                        {
+                            Occupation = player == PlayerColor.Black ? PlayerColor.White : PlayerColor.Black,
+                            Position = new BoardPosition(moveNode.FirstChild.Attributes["Position"].Value),
+                            Piece = (PieceType)Enum.Parse(typeof(PieceType), moveNode.FirstChild.Attributes["Piece"].Value)
+                        };
+                    }
+                    else
+                    {
+                        CompoundMove cMove = move as CompoundMove;
+
+                        for (int i = 0; i < cMove.Length; ++i)
+                        {
+                            cMove.Moves[i].Capture = new GameField
+                            {
+                                Occupation = player == PlayerColor.Black ? PlayerColor.White : PlayerColor.Black,
+                                Position = new BoardPosition(moveNode.ChildNodes[i].Attributes["Position"].Value),
+                                Piece = (PieceType)Enum.Parse(typeof(PieceType), moveNode.ChildNodes[i].Attributes["Piece"].Value)
+                            };
+                        }
+                    }
                 }
 
                 manager.History.Add(move);

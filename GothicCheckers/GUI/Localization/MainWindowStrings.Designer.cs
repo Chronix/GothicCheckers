@@ -268,6 +268,33 @@ namespace GothicCheckers.GUI.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Black.
+        /// </summary>
+        public static string MainWindow_Player_Black {
+            get {
+                return ResourceManager.GetString("MainWindow_Player_Black", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to White.
+        /// </summary>
+        public static string MainWindow_Player_White {
+            get {
+                return ResourceManager.GetString("MainWindow_Player_White", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Current Player:.
+        /// </summary>
+        public static string MainWindow_Status_CurrentPlayer {
+            get {
+                return ResourceManager.GetString("MainWindow_Status_CurrentPlayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Gothic Checkers.
         /// </summary>
         public static string MainWindowTitle {

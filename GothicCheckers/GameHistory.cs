@@ -77,7 +77,7 @@ namespace GothicCheckers
                 get { throw new NotImplementedException(); }
             }
 
-            bool IMove.Forced
+            bool IMove.IsCapture
             {
                 get { throw new NotImplementedException(); }
             }
@@ -88,13 +88,9 @@ namespace GothicCheckers
                 {
                     throw new NotImplementedException();
                 }
-                set
-                {
-                    throw new NotImplementedException();
-                }
             }
 
-            bool IMove.UpgradingMove
+            bool IMove.IsUpgrade
             {
                 get { throw new NotImplementedException(); }
             }

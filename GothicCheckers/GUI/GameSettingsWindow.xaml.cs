@@ -47,7 +47,9 @@ namespace GothicCheckers.GUI
 
         private void btnOK_Click(object sender, RoutedEventArgs e)
         {
+            ((GameManager)DataContext).Reset();
             UpdateBindings();
+            DialogResult = true;
             Close();
         }
 

@@ -19,7 +19,23 @@ namespace GothicCheckers
 
         public GameField Copy()
         {
-            return new GameField { Occupation = this.Occupation, Piece = this.Piece, Position = this.Position };
+            return MemberwiseClone() as GameField;
+        }
+
+        public override string ToString()
+        {
+            string s = string.Empty;
+
+            switch (Occupation)
+            {
+                case PlayerColor.None: s = "0"; break;
+                case PlayerColor.White: s = "w"; break;
+                case PlayerColor.Black: s = "b"; break;
+            }
+
+            if (Piece == PieceType.King) s = s.ToUpper();
+
+            return string.Format("{0} - {1}", Position.Representation, s);
         }
     }
 }

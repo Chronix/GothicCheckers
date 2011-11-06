@@ -17,43 +17,10 @@ namespace GothicCheckers
 
         public event EventHandler<VisualChangedEventArgs> VisualChanged;
 
-        public GameBoard()
-            : this(null)
-        {
-            _fields = new GameField[BOARD_PIECE_COUNT];
-
-            GameField[,] tempFields = new GameField[BOARD_SIDE_SIZE, BOARD_SIDE_SIZE];
-
-            for (int i = 0; i < BOARD_SIDE_SIZE; ++i)
-            {
-                for (int j = 0; j < BOARD_SIDE_SIZE; ++j)
-                {
-                    tempFields[i, j] = new GameField();
-                    tempFields[i, j].Position = new BoardPosition(j, i);
-                }
-
-                switch (i)
-                {
-                    case 0: for (int j = 0; j < BOARD_SIDE_SIZE; ++j) { tempFields[i, j].Occupation = PlayerColor.Black; tempFields[i, j].Piece = PieceType.Normal; } break;
-                    case 1: goto case 0;
-                    case 6: for (int j = 0; j < BOARD_SIDE_SIZE; ++j) { tempFields[i, j].Occupation = PlayerColor.White; tempFields[i, j].Piece = PieceType.Normal; } break;
-                    case 7: goto case 6;
-                    default: break;
-                }
-            }
-
-            int index = 0;
-
-            foreach (GameField f in tempFields)
-            {
-                _fields[index++] = f;
-            }
-
-        }
-
-        private GameBoard(object dummy)
+        public GameBoard(bool init = true)
         {
             IdleMoves = 0;
+            if (init) Reset();
         }
 
         public GameField this[int rawIndex]
@@ -90,16 +57,56 @@ namespace GothicCheckers
 
         public int IdleMoves { get; set; }
 
-        public int GetPieceCountByOccupation(PlayerColor playerColor)
+        public void Reset()
         {
-            int count = 0;
+            _fields = new GameField[BOARD_PIECE_COUNT];
 
-            foreach (GameField f in _fields)
+            GameField[,] tempFields = new GameField[BOARD_SIDE_SIZE, BOARD_SIDE_SIZE];
+
+            for (int i = 0; i < BOARD_SIDE_SIZE; ++i)
             {
-                if (f.Occupation == playerColor) ++count;
+                for (int j = 0; j < BOARD_SIDE_SIZE; ++j)
+                {
+                    tempFields[i, j] = new GameField();
+                    tempFields[i, j].Position = new BoardPosition(j, i);
+                }
+
+                switch (i)
+                {
+                    case 0: for (int j = 0; j < BOARD_SIDE_SIZE; ++j) { tempFields[i, j].Occupation = PlayerColor.Black; tempFields[i, j].Piece = PieceType.Normal; } break;
+                    case 1: goto case 0;
+                    case 6: for (int j = 0; j < BOARD_SIDE_SIZE; ++j) { tempFields[i, j].Occupation = PlayerColor.White; tempFields[i, j].Piece = PieceType.Normal; } break;
+                    case 7: goto case 6;
+                    default: break;
+                }
             }
 
-            return count;
+            int index = 0;
+
+            foreach (GameField f in tempFields)
+            {
+                _fields[index++] = f;
+            }
+
+            IdleMoves = 0;
+        }
+
+        public int GetPieceCountByOccupation(PlayerColor playerColor)
+        {
+            return _fields.Where(f => f.Occupation == playerColor).Count();
+        }
+
+        public int PieceCountOfPlayerAtLevel(PlayerColor player, int level)
+        {
+            int startIndex = level * BOARD_SIDE_SIZE;
+            int endIndex = startIndex + BOARD_SIDE_SIZE;
+
+            return _fields.Where((f, i) => i >= startIndex && i < endIndex).Where(f => f.Occupation == player).Count();
+        }
+
+        public int PieceCountOfPlayerByPieceType(PlayerColor player, PieceType type)
+        {
+            return _fields.Where(f => f.Occupation == player).Where(f => f.Piece == type).Count();
         }
 
         public PlayerColor PlayerAt(BoardPosition pos)
@@ -126,7 +133,7 @@ namespace GothicCheckers
 
         public GameBoard Copy()
         {
-            GameBoard newBoard = new GameBoard(null);
+            GameBoard newBoard = new GameBoard(false);
             newBoard.IdleMoves = IdleMoves;
             newBoard._fields = new GameField[_fields.Length];
 
@@ -136,11 +143,6 @@ namespace GothicCheckers
             }
 
             return newBoard;
-        }
-
-        public static int TrueIndexOf(BoardPosition bp)
-        {
-            return BOARD_SIDE_SIZE * bp.Y + bp.X;
         }
 
         public string AsAsciiPicture()
@@ -179,11 +181,6 @@ namespace GothicCheckers
             return sb.ToString();
         }
 
-        public void DoRawMove(BoardPosition from, BoardPosition to, bool forced, bool reversed)
-        {
-            DoMove(new SimpleMove(this[from].Occupation, from, to) { Reversed = reversed });
-        }
-
         public void DoMove(IMove move, bool suppressRedraw = false)
         {
             IEnumerable<int> changedIndices = null;
@@ -191,19 +188,29 @@ namespace GothicCheckers
             if (move is SimpleMove) changedIndices = DoSimpleMove((SimpleMove)move);
             else changedIndices = DoCompoundMove((CompoundMove)move);
 
-            if (!move.Forced)
+            if (!move.IsCapture)
             {
                 if (move.Reversed) IdleMoves--;
                 else IdleMoves++;
             }
 
-            if (move.UpgradingMove)
+            if (move.IsUpgrade)
             {
                 if (move.Reversed) this[move.FromField].Piece = PieceType.Normal;
                 else this[move.ToField].Piece = PieceType.King;
             }
 
             if (!suppressRedraw) OnVisualChanged(changedIndices);
+        }
+
+        public static int TrueIndexOf(BoardPosition bp)
+        {
+            return BOARD_SIDE_SIZE * bp.Y + bp.X;
+        }
+
+        public static IEnumerable<int> TrueIndicesOf(IEnumerable<BoardPosition> bps)
+        {
+            return bps.Select(bp => TrueIndexOf(bp));
         }
 
         private IEnumerable<int> DoSimpleMove(SimpleMove move)
@@ -215,22 +222,22 @@ namespace GothicCheckers
 
             List<int> changedIndices = new List<int> { TrueIndexOf(move.FromField), TrueIndexOf(move.ToField) };
 
-            if (move.Forced)
+            if (move.IsCapture)
             {
                 if (move.Reversed)
                 {
-                    BoardPosition mid = BoardPosition.GetPositionBetween(move.FromField, move.ToField);
-                    this[mid].Occupation = move.Capture.Occupation;
-                    this[mid].Piece = move.Capture.Piece;
-                    changedIndices.Add(TrueIndexOf(mid));
+                    IList<BoardPosition> mid = BoardPosition.GetPositionsBetween(move.FromField, move.ToField);
+                    this[move.Capture.Position].Occupation = move.Capture.Occupation;
+                    this[move.Capture.Position].Piece = move.Capture.Piece;
+                    changedIndices.AddRange(TrueIndicesOf(mid));
                 }
                 else
                 {
-                    BoardPosition mid = BoardPosition.GetPositionBetween(move.FromField, move.ToField);
-                    move.Capture = this[mid].Copy();
-                    this[mid].Occupation = PlayerColor.None;
-                    this[mid].Piece = PieceType.None;
-                    changedIndices.Add(TrueIndexOf(mid));
+                    IList<BoardPosition> mid = BoardPosition.GetPositionsBetween(move.FromField, move.ToField);
+                    move.Capture = mid.Select(bp => this[bp]).Where(f => f.Occupation == GameUtils.OtherPlayer(move.Player)).Single();
+                    this[move.Capture.Position].Occupation = PlayerColor.None;
+                    this[move.Capture.Position].Piece = PieceType.None;
+                    changedIndices.AddRange(TrueIndicesOf(mid));
                     IdleMoves = 0;
                 }
             }

@@ -34,6 +34,8 @@ namespace GothicCheckers
                 CheckDirectionKing(board, fromField, -1, -1, ref targets);
                 CheckDirectionKing(board, fromField, 0, -1, ref targets);
                 CheckDirectionKing(board, fromField, 1, -1, ref targets);
+                CheckDirectionKing(board, fromField, 1, 0, ref targets);
+                CheckDirectionKing(board, fromField, -1, 0, ref targets);
             }
             
             var result = targets.Where(pair => pair.Value).Select(pair => pair.Key);
@@ -61,11 +63,11 @@ namespace GothicCheckers
                 return moves;
             }
 
-            JumpTree tree = new JumpTree(fromFieldPosition, board);
-            tree.AddTargets(fromFieldPosition, firstTargets);
-            ConstructJumpTree(tree);
+            JumpTree tree = new JumpTree(fromFieldPosition, firstTargets, board);
+            ConstructJumpTree(ref tree);
 
             var paths = tree.Linearize();
+            tree = null;
 
             foreach (var path in paths)
             {
@@ -99,8 +101,15 @@ namespace GothicCheckers
                 else idleMoves.AddRange(moves);
             }
 
-            if (forcedMoves.Count > 0) return forcedMoves;
-            else return idleMoves;
+            List<IMove> allMoves;
+
+            if (forcedMoves.Count > 0) allMoves = forcedMoves;
+            else allMoves = idleMoves;
+
+            int longest = 0;
+
+            allMoves.ForEach(mv => { if (mv.Length > longest) longest = mv.Length; });
+            return allMoves.Where(mv => mv.Length == longest);
         }
 
         public static bool ValidateMove(GameBoard board, IMove move)
@@ -178,7 +187,9 @@ namespace GothicCheckers
                 {
                     if (foundEnemy)
                     {
-                        result.Add(target.Position, true);
+                        bool b;
+                        if (!result.TryGetValue(target.Position, out b)) result.Add(target.Position, true);
+                        target = board[target.Position.X + xDir, target.Position.Y + yDir];
                     }
                     else
                     {
@@ -203,19 +214,21 @@ namespace GothicCheckers
             }
         }
 
-        private static void ConstructJumpTree(JumpTree tree)
+        private static void ConstructJumpTree(ref JumpTree tree)
         {
-            var leaves = tree.GetLeaves();
-            if (ProcessLeafGroup(tree, leaves)) ConstructJumpTree(tree);
+            while (ProcessLeafGroup(ref tree)) ;
         }
 
-        private static bool ProcessLeafGroup(JumpTree tree, IEnumerable<JumpTreeNode> leaves)
+        private static bool ProcessLeafGroup(ref JumpTree tree)
         {
             bool forced;
             bool added = false;
 
+            var leaves = tree.GetLeaves(true);
+
             foreach (var node in leaves)
             {
+                node.CheckAgain = false;
                 var targets = GetPossibleTargetFields(node.Board, node.Position, out forced);
 
                 if (!forced)
@@ -223,7 +236,7 @@ namespace GothicCheckers
                     continue;
                 }
 
-                tree.AddTargets(node.Position, targets);
+                tree.AddTargets(node, targets);
                 added = true;
             }
 

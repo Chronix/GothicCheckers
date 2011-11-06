@@ -5,12 +5,15 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 
+using GothicCheckers.AI;
+
 namespace GothicCheckers
 {
     public class GameManager : INotifyPropertyChanged
     {
         private GameReplayState _replayState;
         private GameBoard _board;
+        private IAIEngine _aiEngine;
 
         public GameHistory History { get; private set; }
         public GameType GameType { get; set; }
@@ -19,6 +22,8 @@ namespace GothicCheckers
         public static GameDifficulty BlackDifficulty { get; set; }
         public PlayerControlType WhiteControl { get; set; }
         public PlayerControlType BlackControl { get; set; }
+
+        public Action<PlayerColor> PlayerSwapCallback { get; set; }
 
 #if DEBUG
         public ObservableCollection<IMove> LastTurnValidMoves { get; private set; }
@@ -56,6 +61,9 @@ namespace GothicCheckers
         {
             History = new GameHistory();
             _board = new GameBoard();
+            _aiEngine = new MinimaxAB();
+
+            _aiEngine.BestMoveChosen += new EventHandler(_aiEngine_BestMoveChosen);
 
             CurrentPlayer = PlayerColor.White;
 
@@ -67,9 +75,8 @@ namespace GothicCheckers
         public void Reset()
         {
             History.Clear();
-
-            _board = new GameBoard();
-            OnPropertyChanged("Board");
+            _board.Reset();
+            CurrentPlayer = PlayerColor.White;
         }
 
         public void DoMove(bool addToHistory, params string[] positions)
@@ -103,16 +110,49 @@ namespace GothicCheckers
             {
                 History.Add(move);
             }
+
+            Play();
         }
 
         public void PlayHistory()
         {
-            foreach (var move in History) _board.DoMove(move, true);
+            for (int i = 1; i < History.Count; ++i) _board.DoMove(History[i], true);
+        }
+
+        public void StartGame()
+        {
+            if (WhiteControl == PlayerControlType.Human && BlackControl == PlayerControlType.Human) GameType = GothicCheckers.GameType.DoubleHuman;
+            else if ((WhiteControl == PlayerControlType.Human && BlackControl == PlayerControlType.Computer) ||
+                     (WhiteControl == PlayerControlType.Computer && BlackControl == PlayerControlType.Human)) GameType = GothicCheckers.GameType.HumanAI;
+            else GameType = GothicCheckers.GameType.DoubleAI;
+
+            Play();
+        }
+
+        public void Play()
+        {
+            if (CurrentPlayer == PlayerColor.White && WhiteControl == PlayerControlType.Computer)
+            {
+                _aiEngine.ComputeBestMove(_board, CurrentPlayer, (int)WhiteDifficulty);
+            }
+            else if (CurrentPlayer == PlayerColor.Black && BlackControl == PlayerControlType.Computer)
+            {
+                _aiEngine.ComputeBestMove(_board, CurrentPlayer, (int)BlackDifficulty);
+            }
+        }
+
+        private void _aiEngine_BestMoveChosen(object sender, EventArgs e)
+        {
+            _board.DoMove(_aiEngine.BestMove);
+            History.Add(_aiEngine.BestMove);
+            SwapPlayers();
+            Play();
         }
 
         private void SwapPlayers()
         {
             CurrentPlayer = GameUtils.OtherPlayer(CurrentPlayer);
+            PlayerSwapCallback(CurrentPlayer);
         }
 
         private bool IsPlayersTurn(PlayerColor movePlayer)

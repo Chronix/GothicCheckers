@@ -13,6 +13,7 @@ namespace GothicCheckers
         public Collection<JumpTreeNode> Children { get; private set; }
         public BoardPosition Position { get; set; }
         public GameBoard Board { get; set; }
+        public bool CheckAgain { get; set; }
 
         public bool HasChildren
         {
@@ -29,7 +30,9 @@ namespace GothicCheckers
     {
         private JumpTreeNode _root;
 
-        public JumpTree(BoardPosition root, GameBoard board)
+        public int NodeCount { get; private set; }
+
+        public JumpTree(BoardPosition root, IEnumerable<BoardPosition> targets, GameBoard board)
         {
             _root = new JumpTreeNode
             {
@@ -37,39 +40,26 @@ namespace GothicCheckers
                 Position = root,
                 Board = board
             };
-        }
 
-        public void AddTargets(BoardPosition to, IEnumerable<BoardPosition> targets)
-        {
-
-            List<JumpTreeNode> possibleNodes = new List<JumpTreeNode>();
-            Queue<JumpTreeNode> row = new Queue<JumpTreeNode>();
-            row.Enqueue(_root);
-
-            while (row.Count > 0)
-            {
-                JumpTreeNode n = row.Dequeue();
-
-                if (n.Position.Equals(to))
-                {
-                    possibleNodes.Add(n);
-                }
-
-                foreach (var node in n.Children) row.Enqueue(node);
-            }
-
-            JumpTreeNode targetNode = possibleNodes[0];
-
-            for (int i = 1; i < possibleNodes.Count; ++i)
-            {
-                if (possibleNodes[i].Depth > targetNode.Depth) targetNode = possibleNodes[i];
-            }
+            NodeCount = 1;
 
             foreach (BoardPosition pos in targets)
             {
+                GameBoard boardCopy = _root.Board.Copy();
+                boardCopy.DoMove(new SimpleMove(boardCopy[_root.Position].Occupation, _root.Position, pos), true);
+                _root.Children.Add(new JumpTreeNode { Board = boardCopy, Depth = _root.Depth + 1, Parent = _root, Position = pos, CheckAgain = true });
+                ++NodeCount;
+            }
+        }
+
+        public void AddTargets(JumpTreeNode targetNode, IEnumerable<BoardPosition> targets)
+        {
+            foreach (BoardPosition pos in targets)
+            {
                 GameBoard board = targetNode.Board.Copy();
-                board.DoRawMove(targetNode.Position, pos, true, false);
-                targetNode.Children.Add(new JumpTreeNode { Board = board, Depth = targetNode.Depth + 1, Parent = targetNode, Position = pos });
+                board.DoMove(new SimpleMove(board[targetNode.Position].Occupation, targetNode.Position, pos), true);
+                targetNode.Children.Add(new JumpTreeNode { Board = board, Depth = targetNode.Depth + 1, Parent = targetNode, Position = pos, CheckAgain = true });
+                ++NodeCount;
             }
         }
 
@@ -97,7 +87,7 @@ namespace GothicCheckers
             return result.ToArray();
         }
 
-        public Collection<JumpTreeNode> GetLeaves()
+        public Collection<JumpTreeNode> GetLeaves(bool toCheckOnly = false)
         {
             Collection<JumpTreeNode> leaves = new Collection<JumpTreeNode>();
             Queue<JumpTreeNode> row = new Queue<JumpTreeNode>();
@@ -107,7 +97,12 @@ namespace GothicCheckers
             {
                 JumpTreeNode n = row.Dequeue();
 
-                if (!n.HasChildren) leaves.Add(n);
+                if (!n.HasChildren)
+                {
+                    if (toCheckOnly && !n.CheckAgain) continue;
+
+                    leaves.Add(n);
+                }
                 else foreach (var node in n.Children) row.Enqueue(node);
             }
 

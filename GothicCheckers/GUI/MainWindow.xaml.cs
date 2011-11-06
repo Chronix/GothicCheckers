@@ -32,6 +32,7 @@ namespace GothicCheckers.GUI
         {
             _manager = new GameManager();
             this.DataContext = _manager;
+            _manager.PlayerSwapCallback = SetCurrentPlayerStatusText;
 
             InitializeComponent();
 
@@ -41,10 +42,11 @@ namespace GothicCheckers.GUI
         #region MAIN MENU COMMAND HANDLERS
         private void Command_Execute_New(object sender, ExecutedRoutedEventArgs args)
         {
-            //_manager.Reset();
-            //GameSettingsWindow gsw = new GameSettingsWindow(_manager);
-            //gsw.Owner = this;
-            //gsw.ShowDialog();
+            GameSettingsWindow gsw = new GameSettingsWindow(_manager);
+            gsw.Owner = this;
+            gsw.ShowDialog();
+            SetCurrentPlayerStatusText(PlayerColor.White);
+            MainGameBoard.FullRedraw();
         }
 
         private void Command_Execute_Load(object sender, ExecutedRoutedEventArgs args)
@@ -212,6 +214,20 @@ namespace GothicCheckers.GUI
         private void Window_Closed(object sender, EventArgs e)
         {
             App.Current.Shutdown();
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            MainGameBoard.FullRedraw();
+        }
+
+        private void SetCurrentPlayerStatusText(PlayerColor player)
+        {
+            switch (player)
+            {
+                case PlayerColor.White: tbCurrentPlayer.Text = Localization.MainWindowStrings.MainWindow_Status_CurrentPlayer + " " + Localization.MainWindowStrings.MainWindow_Player_White; break;
+                case PlayerColor.Black: tbCurrentPlayer.Text = Localization.MainWindowStrings.MainWindow_Status_CurrentPlayer + " " + Localization.MainWindowStrings.MainWindow_Player_Black; break;
+            }
         }
     }
 }

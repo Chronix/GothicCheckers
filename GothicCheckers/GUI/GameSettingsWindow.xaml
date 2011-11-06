@@ -34,14 +34,14 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0"><x:Static Member="Localization:GameSettingsWindowStrings.Txt_Player" /></TextBlock>
                 <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical">
-                    <RadioButton IsChecked="{Binding Path=Player1Control, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:PlayerControlType.Human}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Human}" x:Name="rbPlayer1ControlHuman" />
-                    <RadioButton IsChecked="{Binding Path=Player1Control, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:PlayerControlType.Computer}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Computer}" x:Name="rbPlayer1ControlComputer" />
+                    <RadioButton IsChecked="{Binding Path=WhiteControl, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:PlayerControlType.Human}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Human}" x:Name="rbPlayer1ControlHuman" />
+                    <RadioButton IsChecked="{Binding Path=WhiteControl, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:PlayerControlType.Computer}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Computer}" x:Name="rbPlayer1ControlComputer" />
                 </StackPanel>
                 <TextBlock Grid.Row="1"><x:Static Member="Localization:GameSettingsWindowStrings.Txt_Difficulty" /></TextBlock>
                 <StackPanel IsEnabled="{Binding ElementName=rbPlayer1ControlComputer, Path=IsChecked}" Grid.Column="1" Grid.Row="1" Orientation="Vertical">
-                    <RadioButton IsChecked="{Binding Path=Player1Difficulty, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:GameDifficulty.Easy}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Easy}" x:Name="rbPlayer1DifficultyEasy" />
-                    <RadioButton IsChecked="{Binding Path=Player1Difficulty, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:GameDifficulty.Normal}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Normal}" x:Name="rbPlayer1DifficultyNormal" />
-                    <RadioButton IsChecked="{Binding Path=Player1Difficulty, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:GameDifficulty.Hard}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Hard}" x:Name="rbPlayer1DifficultyHard" />
+                    <RadioButton IsChecked="{Binding Path=WhiteDifficulty, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:GameDifficulty.Easy}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Easy}" x:Name="rbPlayer1DifficultyEasy" />
+                    <RadioButton IsChecked="{Binding Path=WhiteDifficulty, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:GameDifficulty.Normal}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Normal}" x:Name="rbPlayer1DifficultyNormal" />
+                    <RadioButton IsChecked="{Binding Path=WhiteDifficulty, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:GameDifficulty.Hard}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Hard}" x:Name="rbPlayer1DifficultyHard" />
                 </StackPanel>
             </Grid>
         </GroupBox>
@@ -57,14 +57,14 @@
                 </Grid.RowDefinitions>
                 <TextBlock Grid.Row="0" ><x:Static Member="Localization:GameSettingsWindowStrings.Txt_Player" /></TextBlock>
                 <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Vertical">
-                    <RadioButton IsChecked="{Binding Path=Player2Control, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:PlayerControlType.Human}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Human}" x:Name="rbPlayer2ControlHuman" />
-                    <RadioButton IsChecked="{Binding Path=Player2Control, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:PlayerControlType.Computer}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Computer}"  x:Name="rbPlayer2ControlComputer" />
+                    <RadioButton IsChecked="{Binding Path=BlackControl, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:PlayerControlType.Human}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Human}" x:Name="rbPlayer2ControlHuman" />
+                    <RadioButton IsChecked="{Binding Path=BlackControl, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:PlayerControlType.Computer}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Computer}"  x:Name="rbPlayer2ControlComputer" />
                 </StackPanel>
                 <TextBlock Grid.Row="1" ><x:Static Member="Localization:GameSettingsWindowStrings.Txt_Difficulty" /></TextBlock>
                 <StackPanel IsEnabled="{Binding ElementName=rbPlayer2ControlComputer, Path=IsChecked}" Grid.Column="1" Grid.Row="1" Orientation="Vertical">
-                    <RadioButton IsChecked="{Binding Path=Player2Difficulty, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:GameDifficulty.Easy}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Easy}" x:Name="rbPlayer2DifficultyEasy" />
-                    <RadioButton IsChecked="{Binding Path=Player2Difficulty, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:GameDifficulty.Normal}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Normal}" x:Name="rbPlayer2DifficultyNormal" />
-                    <RadioButton IsChecked="{Binding Path=Player2Difficulty, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:GameDifficulty.Hard}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Hard}" x:Name="rbPlayer2DifficultyHard" />
+                    <RadioButton IsChecked="{Binding Path=BlackDifficulty, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:GameDifficulty.Easy}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Easy}" x:Name="rbPlayer2DifficultyEasy" />
+                    <RadioButton IsChecked="{Binding Path=BlackDifficulty, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:GameDifficulty.Normal}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Normal}" x:Name="rbPlayer2DifficultyNormal" />
+                    <RadioButton IsChecked="{Binding Path=BlackDifficulty, Converter={StaticResource ETBConverter}, ConverterParameter={x:Static Project:GameDifficulty.Hard}, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Content="{x:Static Localization:GameSettingsWindowStrings.Radio_Hard}" x:Name="rbPlayer2DifficultyHard" />
                 </StackPanel>
             </Grid>
         </GroupBox>

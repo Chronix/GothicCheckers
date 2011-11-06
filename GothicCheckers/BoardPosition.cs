@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -72,6 +72,93 @@ namespace GothicCheckers
             return mid;
         }
 
+        public static IList<BoardPosition> GetPositionsBetween(BoardPosition pos1, BoardPosition pos2)
+        {
+            List<BoardPosition> positions = new List<BoardPosition>();
+            int newX = pos1.X;
+            int newY = pos1.Y;
+
+            if (pos2.X > pos1.X)
+            {
+                if (pos2.Y > pos1.Y)
+                {
+                    while (newX != pos2.X - 1 && newY != pos2.Y - 1)
+                    {
+                        ++newX;
+                        ++newY;
+                        positions.Add(new BoardPosition(newX, newY));
+                    }
+                }
+                else if (pos2.Y == pos1.Y)
+                {
+                    while (newX != pos2.X - 1)
+                    {
+                        ++newX;
+                        positions.Add(new BoardPosition(newX, newY));
+                    }
+                }
+                else
+                {
+                    while (newX != pos2.X - 1 && newY != pos2.Y + 1)
+                    {
+                        ++newX;
+                        --newY;
+                        positions.Add(new BoardPosition(newX, newY));
+                    }
+                }
+            }
+            else if (pos2.X == pos1.X)
+            {
+                if (pos2.Y > pos1.Y)
+                {
+                    while (newY != pos2.Y - 1)
+                    {
+                        ++newY;
+                        positions.Add(new BoardPosition(newX, newY));
+                    }
+                }
+                else if (pos2.Y < pos1.Y)
+                {
+                    while (newY != pos2.Y + 1)
+                    {
+                        --newY;
+                        positions.Add(new BoardPosition(newX, newY));
+                    }
+                }
+            }
+            else
+            {
+                if (pos2.Y > pos1.Y)
+                {
+                    while (newX != pos2.X + 1 && newY != pos2.Y - 1)
+                    {
+                        --newX;
+                        ++newY;
+                        positions.Add(new BoardPosition(newX, newY));
+                    }
+                }
+                else if (pos2.Y == pos1.Y)
+                {
+                    while (newX != pos2.X + 1)
+                    {
+                        --newX;
+                        positions.Add(new BoardPosition(newX, newY));
+                    }
+                }
+                else
+                {
+                    while (newX != pos2.X + 1 && newY != pos2.Y + 1)
+                    {
+                        --newX;
+                        --newY;
+                        positions.Add(new BoardPosition(newX, newY));
+                    }
+                }
+            }
+
+            return positions;
+        }
+
         public bool IsUpgradingPosition(PlayerColor player)
         {
             string myRep = Representation;
@@ -110,11 +197,6 @@ namespace GothicCheckers
         public static implicit operator BoardPosition(string rep)
         {
             return new BoardPosition(rep);
-        }
-
-        public static explicit operator string(BoardPosition pos)
-        {
-            return pos.Representation;
         }
     }
 }

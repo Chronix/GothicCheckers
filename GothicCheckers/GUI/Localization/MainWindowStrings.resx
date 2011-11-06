@@ -189,4 +189,13 @@
   <data name="MainWindowTitle" xml:space="preserve">
     <value>Gothic Checkers</value>
   </data>
+  <data name="MainWindow_Player_Black" xml:space="preserve">
+    <value>Black</value>
+  </data>
+  <data name="MainWindow_Player_White" xml:space="preserve">
+    <value>White</value>
+  </data>
+  <data name="MainWindow_Status_CurrentPlayer" xml:space="preserve">
+    <value>Current Player:</value>
+  </data>
 </root>

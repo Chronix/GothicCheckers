@@ -27,12 +27,12 @@ namespace GothicCheckers
             set { throw new NotSupportedException(); }
         }
 
-        public bool Forced
+        public bool IsCapture
         {
             get { return true; }
         }
 
-        public bool Reversed { get; set; }
+        public bool Reversed { get; private set; }
 
         GameField IMove.Capture
         {
@@ -40,9 +40,9 @@ namespace GothicCheckers
             set { return; }
         }
 
-        public bool UpgradingMove
+        public bool IsUpgrade
         {
-            get { return Moves.Last().UpgradingMove; }
+            get { return Moves.Last().IsUpgrade; }
         }
 
         public int Length
@@ -87,6 +87,9 @@ namespace GothicCheckers
 
             sb.Append(Moves.Last().ToField.Representation);
             sb.Append(" *");
+
+            if (Moves.Last().IsUpgrade) sb.Append(" !");
+
             return sb.ToString();
         }
 

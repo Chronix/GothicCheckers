@@ -37,9 +37,9 @@ namespace GothicCheckers
 
     public enum GameDifficulty
     {
-        Easy,
-        Normal,
-        Hard
+        Easy = 1,
+        Normal = 2,
+        Hard = 3
     }
 
     public enum ValidationResult
