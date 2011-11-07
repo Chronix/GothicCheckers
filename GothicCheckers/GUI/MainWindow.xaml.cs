@@ -32,9 +32,11 @@ namespace GothicCheckers.GUI
         {
             _manager = new GameManager();
             this.DataContext = _manager;
-            _manager.PlayerSwapCallback = SetCurrentPlayerStatusText;
 
             InitializeComponent();
+
+            _manager.GameEnded += new EventHandler<PlayerEventArgs>(_manager_GameEnded);
+            _manager.PlayersSwapped += new EventHandler<PlayerEventArgs>(_manager_PlayersSwapped);
 
             MainGameBoard.Manager = _manager;
         }
@@ -47,6 +49,7 @@ namespace GothicCheckers.GUI
             gsw.ShowDialog();
             SetCurrentPlayerStatusText(PlayerColor.White);
             MainGameBoard.FullRedraw();
+            _manager.StartGame();
         }
 
         private void Command_Execute_Load(object sender, ExecutedRoutedEventArgs args)
@@ -219,6 +222,17 @@ namespace GothicCheckers.GUI
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {
             MainGameBoard.FullRedraw();
+        }
+
+        private void _manager_GameEnded(object sender, PlayerEventArgs e)
+        {
+            if (e.Player == PlayerColor.None) MessageBox.Show("Game has ended in a draw.", "Draw!", MessageBoxButton.OK, MessageBoxImage.Information);
+            else MessageBox.Show(string.Format("Game has ended! {0} wins!", e.Player == PlayerColor.White ? Localization.MainWindowStrings.MainWindow_Player_White : Localization.MainWindowStrings.MainWindow_Player_Black), "Victory!", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        void _manager_PlayersSwapped(object sender, PlayerEventArgs e)
+        {
+            SetCurrentPlayerStatusText(e.Player);
         }
 
         private void SetCurrentPlayerStatusText(PlayerColor player)

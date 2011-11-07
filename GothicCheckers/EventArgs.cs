@@ -14,4 +14,14 @@ namespace GothicCheckers
             ChangedIndices = changedIndices;
         }
     }
+
+    public class PlayerEventArgs : EventArgs
+    {
+        public PlayerColor Player { get; private set; }
+
+        public PlayerEventArgs(PlayerColor player)
+        {
+            Player = player;
+        }
+    }
 }

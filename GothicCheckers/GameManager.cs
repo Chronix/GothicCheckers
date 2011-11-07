@@ -23,7 +23,8 @@ namespace GothicCheckers
         public PlayerControlType WhiteControl { get; set; }
         public PlayerControlType BlackControl { get; set; }
 
-        public Action<PlayerColor> PlayerSwapCallback { get; set; }
+        public event EventHandler<PlayerEventArgs> GameEnded;
+        public event EventHandler<PlayerEventArgs> PlayersSwapped;
 
 #if DEBUG
         public ObservableCollection<IMove> LastTurnValidMoves { get; private set; }
@@ -87,11 +88,11 @@ namespace GothicCheckers
 
             if (positions.Length == 2)
             {
-                move = new SimpleMove(_board[positions[0]].Occupation, positions[0], positions[1]);
+                move = new SimpleMove(_board[positions[0]].Occupation, positions[0], positions[1], _board[positions[0]].Piece == PieceType.King, BoardPosition.GetPositionBetween(positions[0], positions[1]) != BoardPosition.Invalid);
             }
             else
             {
-                move = CompoundMove.FromPositions(_board[positions[0]].Occupation, positions[0], positions.Last(), positions.Where((pos, i) => i > 0 && i < positions.Length - 1).ToArray());
+                move = CompoundMove.FromPositions(_board[positions[0]].Occupation, positions[0], positions.Last(), _board[positions[0]].Piece == PieceType.King, positions.Where((pos, i) => i > 0 && i < positions.Length - 1).ToArray());
             }
 
             ExceptionProvider.ThrowInvalidMoveIf(!IsPlayersTurn(move.Player), GUI.Localization.ErrorMessages.WaitYourTurn);
@@ -131,6 +132,9 @@ namespace GothicCheckers
 
         public void Play()
         {
+            PlayerColor winner;
+            if (RuleEngine.CheckForGameEnd(_board, out winner)) OnGameEnded(winner);
+
             if (CurrentPlayer == PlayerColor.White && WhiteControl == PlayerControlType.Computer)
             {
                 _aiEngine.ComputeBestMove(_board, CurrentPlayer, (int)WhiteDifficulty);
@@ -152,7 +156,7 @@ namespace GothicCheckers
         private void SwapPlayers()
         {
             CurrentPlayer = GameUtils.OtherPlayer(CurrentPlayer);
-            PlayerSwapCallback(CurrentPlayer);
+            OnPlayersSwapped(CurrentPlayer);
         }
 
         private bool IsPlayersTurn(PlayerColor movePlayer)
@@ -163,6 +167,16 @@ namespace GothicCheckers
         private void OnPropertyChanged(string propName)
         {
             if (PropertyChanged != null) PropertyChanged(this, new PropertyChangedEventArgs(propName));
+        }
+
+        private void OnGameEnded(PlayerColor winner)
+        {
+            if (GameEnded != null) GameEnded(this, new PlayerEventArgs(winner));
+        }
+
+        private void OnPlayersSwapped(PlayerColor newPlayer)
+        {
+            if (PlayersSwapped != null) PlayersSwapped(this, new PlayerEventArgs(newPlayer));
         }
     }
 }

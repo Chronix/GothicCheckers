@@ -59,7 +59,7 @@ namespace GothicCheckers
 
             if (!forcedOnly)
             {
-                moves.AddRange(firstTargets.Select(pos => new SimpleMove(player, fromFieldPosition, pos)));
+                moves.AddRange(firstTargets.Select(pos => new SimpleMove(player, fromFieldPosition, pos, board[fromFieldPosition].Piece == PieceType.King, false)));
                 return moves;
             }
 
@@ -73,11 +73,11 @@ namespace GothicCheckers
             {
                 if (path.Count == 2)
                 {
-                    moves.Add(new SimpleMove(player, path[0], path[1]));
+                    moves.Add(new SimpleMove(player, path[0], path[1], board[fromFieldPosition].Piece == PieceType.King, true));
                 }
                 else
                 {
-                    CompoundMove move = CompoundMove.FromPositions(player, path.First(), path.Last(), path.GetRange(1, path.Count - 2).ToArray());
+                    CompoundMove move = CompoundMove.FromPositions(player, path.First(), path.Last(), board[fromFieldPosition].Piece == PieceType.King, path.GetRange(1, path.Count - 2).ToArray());
                     moves.Add(move);
                 }
             }
@@ -101,15 +101,15 @@ namespace GothicCheckers
                 else idleMoves.AddRange(moves);
             }
 
-            List<IMove> allMoves;
+            if (forcedMoves.Count > 0)
+            {
+                int longest = 0;
 
-            if (forcedMoves.Count > 0) allMoves = forcedMoves;
-            else allMoves = idleMoves;
+                forcedMoves.ForEach(mv => { if (mv.Length > longest) longest = mv.Length; });
+                return forcedMoves.Where(mv => mv.Length == longest);
+            }
 
-            int longest = 0;
-
-            allMoves.ForEach(mv => { if (mv.Length > longest) longest = mv.Length; });
-            return allMoves.Where(mv => mv.Length == longest);
+            return idleMoves;
         }
 
         public static bool ValidateMove(GameBoard board, IMove move)

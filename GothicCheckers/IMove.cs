@@ -11,7 +11,8 @@ namespace GothicCheckers
         BoardPosition FromField { get; }
         BoardPosition ToField { get; }
 
-        bool IsCapture { get; }
+        bool IsCapture { get; set; }
+        bool KingMove { get; }        
         bool Reversed { get; }
         bool IsUpgrade { get; }
         int Length { get; }

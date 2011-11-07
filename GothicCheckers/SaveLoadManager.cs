@@ -44,6 +44,8 @@ namespace GothicCheckers
                     
                     if (move is CompoundMove) w.WriteAttributeString("Through", ((CompoundMove)move).GetMidFieldsSaveString());
 
+                    w.WriteAttributeString("KingMove", move.KingMove.ToString());
+
                     if (move is SimpleMove && move.Capture != null)
                     {
                         w.WriteStartElement("Capture");
@@ -98,15 +100,17 @@ namespace GothicCheckers
 
                 if (string.IsNullOrEmpty(through))
                 {
-                    move = new SimpleMove(player, new BoardPosition(from), new BoardPosition(to));
+                    move = new SimpleMove(player, new BoardPosition(from), new BoardPosition(to), bool.Parse(moveNode.Attributes["KingMove"].Value), false);
                 }
                 else
                 {
-                    move = CompoundMove.FromSaveData(player, from, to, through);
+                    move = CompoundMove.FromSaveData(player, from, to, through, bool.Parse(moveNode.Attributes["KingMove"].Value));
                 }
 
                 if (moveNode.HasChildNodes)
                 {
+                    move.IsCapture = true;
+
                     if (move is SimpleMove)
                     {
                         move.Capture = new GameField
@@ -122,6 +126,7 @@ namespace GothicCheckers
 
                         for (int i = 0; i < cMove.Length; ++i)
                         {
+                            cMove.Moves[i].IsCapture = true;
                             cMove.Moves[i].Capture = new GameField
                             {
                                 Occupation = player == PlayerColor.Black ? PlayerColor.White : PlayerColor.Black,

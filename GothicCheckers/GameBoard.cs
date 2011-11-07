@@ -234,7 +234,7 @@ namespace GothicCheckers
                 else
                 {
                     IList<BoardPosition> mid = BoardPosition.GetPositionsBetween(move.FromField, move.ToField);
-                    move.Capture = mid.Select(bp => this[bp]).Where(f => f.Occupation == GameUtils.OtherPlayer(move.Player)).Single();
+                    move.Capture = mid.Select(bp => this[bp]).Where(f => f.Occupation == GameUtils.OtherPlayer(move.Player)).Single().Copy();
                     this[move.Capture.Position].Occupation = PlayerColor.None;
                     this[move.Capture.Position].Piece = PieceType.None;
                     changedIndices.AddRange(TrueIndicesOf(mid));

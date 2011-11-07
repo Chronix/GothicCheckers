@@ -24,37 +24,27 @@ namespace GothicCheckers
             }
         }
 
-        public bool IsCapture
-        {
-            get
-            {
-                return BoardPosition.GetPositionsBetween(FromField, ToField).Count > 0;
-            }
-        }
+        public bool IsCapture { get; set; }
 
-        public bool KingMove
-        {
-            get
-            {
-                return BoardPosition.GetPositionsBetween(FromField, ToField).Count > 1;
-            }
-        }
+        public bool KingMove { get; private set; }
 
         public int Length
         {
             get { return 1; }
         }
 
-        public SimpleMove(PlayerColor player, BoardPosition from, BoardPosition to)
+        public SimpleMove(PlayerColor player, BoardPosition from, BoardPosition to, bool kingMove, bool isCapture)
         {
             Player = player;
             FromField = from;
             ToField = to;
+            KingMove = kingMove;
+            IsCapture = isCapture;
         }
 
         public IMove Reverse()
         {
-            SimpleMove rev = new SimpleMove(Player, ToField, FromField) { Reversed = true };
+            SimpleMove rev = new SimpleMove(Player, ToField, FromField, KingMove, IsCapture) { Reversed = true };
             rev.Capture = Capture != null ? Capture.Copy() : null;
             return rev;
         }
@@ -73,7 +63,7 @@ namespace GothicCheckers
 
         public bool Equals(SimpleMove other)
         {
-            return FromField == other.FromField && ToField == other.ToField && KingMove == other.KingMove;
+            return FromField == other.FromField && ToField == other.ToField && KingMove == other.KingMove && IsCapture == other.IsCapture;
         }
 
         public bool Equals(IMove other)

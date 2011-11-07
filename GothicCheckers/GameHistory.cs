@@ -80,6 +80,7 @@ namespace GothicCheckers
             bool IMove.IsCapture
             {
                 get { throw new NotImplementedException(); }
+                set { throw new NotImplementedException(); }
             }
 
             bool IMove.Reversed
@@ -128,6 +129,12 @@ namespace GothicCheckers
             public override string ToString()
             {
                 return GUI.Localization.MainWindowStrings.GameHistory_InitialState;
+            }
+
+
+            bool IMove.KingMove
+            {
+                get { throw new NotImplementedException(); }
             }
         }
     }

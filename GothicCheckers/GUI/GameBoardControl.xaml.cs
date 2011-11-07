@@ -179,6 +179,7 @@ namespace GothicCheckers.GUI
                     if (_manager.Board[i].Piece == PieceType.Normal)
                     {
                         _normalPieces[i].Visibility = System.Windows.Visibility.Visible;
+                        _kingPieces[i].Visibility = System.Windows.Visibility.Hidden;
 
                         if (_manager.Board[i].Occupation == PlayerColor.Black)
                         {

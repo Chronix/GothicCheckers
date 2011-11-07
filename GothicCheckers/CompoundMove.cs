@@ -30,6 +30,12 @@ namespace GothicCheckers
         public bool IsCapture
         {
             get { return true; }
+            set { return; }
+        }
+
+        public bool KingMove
+        {
+            get { return Moves[0].KingMove; }
         }
 
         public bool Reversed { get; private set; }
@@ -105,7 +111,7 @@ namespace GothicCheckers
             return s;
         }
 
-        public static CompoundMove FromSaveData(PlayerColor player, string from, string to, string through)
+        public static CompoundMove FromSaveData(PlayerColor player, string from, string to, string through, bool king)
         {
             BoardPosition[] positions = new BoardPosition[through.Length / 2];
 
@@ -114,28 +120,28 @@ namespace GothicCheckers
                 positions[i] = new BoardPosition(through.Substring(i * 2, 2));
             }
 
-            return CompoundMove.FromPositions(player, new BoardPosition(from), new BoardPosition(to), positions);
+            return CompoundMove.FromPositions(player, new BoardPosition(from), new BoardPosition(to), king, positions);
         }
 
-        public static CompoundMove FromPositions(PlayerColor player, BoardPosition from, BoardPosition to, params BoardPosition[] through)
+        public static CompoundMove FromPositions(PlayerColor player, BoardPosition from, BoardPosition to, bool king, params BoardPosition[] through)
         {
             CompoundMove cMove = new CompoundMove();
 
             SimpleMove[] moves = new SimpleMove[through.Length + 1];
-            moves[0] = new SimpleMove(player, from, through[0]);
+            moves[0] = new SimpleMove(player, from, through[0], king, true);
 
             for (int i = 1; i < through.Length; ++i)
             {
-                moves[i] = new SimpleMove(player, through[i - 1], through[i]);
+                moves[i] = new SimpleMove(player, through[i - 1], through[i], king, true);
             }
 
-            moves[moves.Length - 1] = new SimpleMove(player, through.Last(), to);
+            moves[moves.Length - 1] = new SimpleMove(player, through.Last(), to, king, true);
 
             cMove.Moves.AddRange(moves);
             return cMove;
         }
 
-        public static CompoundMove FromPositions(PlayerColor player, string from, string to, params string[] through)
+        public static CompoundMove FromPositions(PlayerColor player, string from, string to, bool king, params string[] through)
         {
             BoardPosition[] pos = new BoardPosition[through.Length];
 
@@ -144,7 +150,7 @@ namespace GothicCheckers
                 pos[i] = new BoardPosition(through[i]);
             }
 
-            return FromPositions(player, from, to, pos);
+            return FromPositions(player, from, to, king, pos);
         }
 
         public CompoundMove Copy()
