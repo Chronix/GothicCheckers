@@ -37,6 +37,7 @@ namespace GothicCheckers.GUI
 
             _manager.GameEnded += new EventHandler<PlayerEventArgs>(_manager_GameEnded);
             _manager.PlayersSwapped += new EventHandler<PlayerEventArgs>(_manager_PlayersSwapped);
+            _manager.MoveDone += new EventHandler(_manager_MoveDone);
 
             MainGameBoard.Manager = _manager;
         }
@@ -226,13 +227,18 @@ namespace GothicCheckers.GUI
 
         private void _manager_GameEnded(object sender, PlayerEventArgs e)
         {
-            if (e.Player == PlayerColor.None) MessageBox.Show("Game has ended in a draw.", "Draw!", MessageBoxButton.OK, MessageBoxImage.Information);
-            else MessageBox.Show(string.Format("Game has ended! {0} wins!", e.Player == PlayerColor.White ? Localization.MainWindowStrings.MainWindow_Player_White : Localization.MainWindowStrings.MainWindow_Player_Black), "Victory!", MessageBoxButton.OK, MessageBoxImage.Information);
+            if (e.Player == PlayerColor.None) MessageBox.Show(Localization.MainWindowStrings.MainWindow_GameEnded_Draw, Localization.MainWindowStrings.MainWindow_Draw, MessageBoxButton.OK, MessageBoxImage.Information);
+            else MessageBox.Show(string.Format(Localization.MainWindowStrings.MainWIndow_GameEnded_Win, e.Player == PlayerColor.White ? Localization.MainWindowStrings.MainWindow_Player_White : Localization.MainWindowStrings.MainWindow_Player_Black), Localization.MainWindowStrings.MainWindow_Victory, MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
-        void _manager_PlayersSwapped(object sender, PlayerEventArgs e)
+        private void _manager_PlayersSwapped(object sender, PlayerEventArgs e)
         {
             SetCurrentPlayerStatusText(e.Player);
+        }
+
+        private void _manager_MoveDone(object sender, EventArgs e)
+        {
+            lbHistory.ScrollIntoView(lbHistory.Items[lbHistory.Items.Count - 1]);
         }
 
         private void SetCurrentPlayerStatusText(PlayerColor player)

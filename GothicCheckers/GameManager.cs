@@ -25,6 +25,7 @@ namespace GothicCheckers
 
         public event EventHandler<PlayerEventArgs> GameEnded;
         public event EventHandler<PlayerEventArgs> PlayersSwapped;
+        public event EventHandler MoveDone;
 
 #if DEBUG
         public ObservableCollection<IMove> LastTurnValidMoves { get; private set; }
@@ -112,6 +113,7 @@ namespace GothicCheckers
                 History.Add(move);
             }
 
+            OnMoveDone();
             Play();
         }
 
@@ -150,6 +152,7 @@ namespace GothicCheckers
             _board.DoMove(_aiEngine.BestMove);
             History.Add(_aiEngine.BestMove);
             SwapPlayers();
+            OnMoveDone();
             Play();
         }
 
@@ -177,6 +180,11 @@ namespace GothicCheckers
         private void OnPlayersSwapped(PlayerColor newPlayer)
         {
             if (PlayersSwapped != null) PlayersSwapped(this, new PlayerEventArgs(newPlayer));
+        }
+
+        private void OnMoveDone()
+        {
+            if (MoveDone != null) MoveDone(this, EventArgs.Empty);
         }
     }
 }

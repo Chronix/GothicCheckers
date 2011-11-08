@@ -268,6 +268,33 @@ namespace GothicCheckers.GUI.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Draw!.
+        /// </summary>
+        public static string MainWindow_Draw {
+            get {
+                return ResourceManager.GetString("MainWindow_Draw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game has ended in a draw..
+        /// </summary>
+        public static string MainWindow_GameEnded_Draw {
+            get {
+                return ResourceManager.GetString("MainWindow_GameEnded_Draw", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Game has ended. {0} wins!.
+        /// </summary>
+        public static string MainWIndow_GameEnded_Win {
+            get {
+                return ResourceManager.GetString("MainWIndow_GameEnded_Win", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Black.
         /// </summary>
         public static string MainWindow_Player_Black {
@@ -291,6 +318,15 @@ namespace GothicCheckers.GUI.Localization {
         public static string MainWindow_Status_CurrentPlayer {
             get {
                 return ResourceManager.GetString("MainWindow_Status_CurrentPlayer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Victory!.
+        /// </summary>
+        public static string MainWindow_Victory {
+            get {
+                return ResourceManager.GetString("MainWindow_Victory", resourceCulture);
             }
         }
         

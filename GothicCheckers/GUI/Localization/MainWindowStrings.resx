@@ -189,6 +189,15 @@
   <data name="MainWindowTitle" xml:space="preserve">
     <value>Gothic Checkers</value>
   </data>
+  <data name="MainWindow_Draw" xml:space="preserve">
+    <value>Draw!</value>
+  </data>
+  <data name="MainWindow_GameEnded_Draw" xml:space="preserve">
+    <value>Game has ended in a draw.</value>
+  </data>
+  <data name="MainWIndow_GameEnded_Win" xml:space="preserve">
+    <value>Game has ended. {0} wins!</value>
+  </data>
   <data name="MainWindow_Player_Black" xml:space="preserve">
     <value>Black</value>
   </data>
@@ -197,5 +206,8 @@
   </data>
   <data name="MainWindow_Status_CurrentPlayer" xml:space="preserve">
     <value>Current Player:</value>
+  </data>
+  <data name="MainWindow_Victory" xml:space="preserve">
+    <value>Victory!</value>
   </data>
 </root>
