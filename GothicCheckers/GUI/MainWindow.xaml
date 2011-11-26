@@ -5,7 +5,7 @@
         xmlns:Utils="clr-namespace:GothicCheckers.GUI.Utilities"
         xmlns:Project="clr-namespace:GothicCheckers"
         xmlns:GUI="clr-namespace:GothicCheckers.GUI"
-        Title="{x:Static Localization:MainWindowStrings.MainWindowTitle}" Height="600" Width="800" Closed="Window_Closed">
+        Title="{x:Static Localization:MainWindowStrings.MainWindowTitle}" Height="600" Width="800" Closed="Window_Closed" KeyDown="Window_KeyDown">
     <Window.Resources>
         <Utils:ParameterEqualityConverter x:Key="ETBConverter" />
         

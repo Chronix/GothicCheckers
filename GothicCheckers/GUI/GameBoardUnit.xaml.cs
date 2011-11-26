@@ -21,6 +21,8 @@ namespace GothicCheckers.GUI
     {
         public static readonly DependencyProperty UnitColorProperty = DependencyProperty.Register("UnitColor", typeof(Brush), typeof(GameBoardUnit), new FrameworkPropertyMetadata(Brushes.Black));
 
+        private bool _isMulti = false;
+
         public GameBoardUnit()
         {
             InitializeComponent();
@@ -64,6 +66,21 @@ namespace GothicCheckers.GUI
 
         public void ShowSelectionRect(bool multi = false)
         {
+            if (multi)
+            {
+                if (!_isMulti)
+                {
+                    SelectionRect.Fill = (Brush)FindResource("SquareSelectionBrush");
+                }                
+            }
+            else
+            {
+                if (_isMulti)
+                {
+                    SelectionRect.Fill = (Brush)FindResource("SquareMultiSelectionBrush");
+                }
+            }
+
             SelectionRect.Visibility = System.Windows.Visibility.Visible;
         }
 

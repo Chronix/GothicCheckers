@@ -11,12 +11,23 @@
         <RectangleGeometry x:Key="SelectionBounds" Rect="0,0 100,100" />
         <RectangleGeometry x:Key="SquareSelectionGeometry" Rect="0,0 100,100" />
         <Pen x:Key="SelectionPen" Brush="Red" Thickness="8" />
+        <Pen x:Key="MultiSelectionPen" Brush="Orange" Thickness="8" />
         <DrawingBrush x:Key="SquareSelectionBrush" Stretch="Uniform">
             <DrawingBrush.Drawing>
                 <DrawingGroup>
                     <DrawingGroup.Children>
                         <GeometryDrawing Geometry="{StaticResource SelectionBounds}" Brush="Transparent"/>
                         <GeometryDrawing Geometry="{StaticResource SquareSelectionGeometry}" Pen="{StaticResource SelectionPen}"/>
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+        <DrawingBrush x:Key="SquareMultiSelectionBrush" Stretch="Uniform">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Geometry="{StaticResource SelectionBounds}" Brush="Transparent"/>
+                        <GeometryDrawing Geometry="{StaticResource SquareSelectionGeometry}" Pen="{StaticResource MultiSelectionPen}"/>
                     </DrawingGroup.Children>
                 </DrawingGroup>
             </DrawingBrush.Drawing>

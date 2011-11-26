@@ -49,7 +49,6 @@ namespace GothicCheckers.GUI
             gsw.Owner = this;
             gsw.ShowDialog();
             SetCurrentPlayerStatusText(PlayerColor.White);
-            //MainGameBoard.Manager = _manager;
             MainGameBoard.FullRedraw();
             _manager.StartGame();
         }
@@ -214,12 +213,17 @@ namespace GothicCheckers.GUI
         {
             
         }
-        #endregion
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape) MainGameBoard.ClearSelections();
+        }
 
         private void Window_Closed(object sender, EventArgs e)
         {
             App.Current.Shutdown();
         }
+        #endregion
 
         private void MenuItem_Click(object sender, RoutedEventArgs e)
         {

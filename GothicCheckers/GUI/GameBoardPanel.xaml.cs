@@ -23,7 +23,6 @@ namespace GothicCheckers.GUI
 
         private GameManager _manager;
         private GameBoardUnit[] _units;
-        private bool _selecting;
 
         private List<int> _activeSelections;
         private List<BoardPosition> _movePositions;
@@ -44,6 +43,13 @@ namespace GothicCheckers.GUI
             _units = new GameBoardUnit[GameBoard.BOARD_PIECE_COUNT];
             _activeSelections = new List<int>();
             _movePositions = new List<BoardPosition>();
+        }
+
+        public void ClearSelections()
+        {
+            _activeSelections.ForEach(i => _units[i].HideSelectionRect());
+            _activeSelections.Clear();
+            _movePositions.Clear();
         }
 
         public void FullRedraw()
@@ -116,33 +122,68 @@ namespace GothicCheckers.GUI
             else return (Brush)FindResource("WhiteSquareBackgroundBrush");
         }
 
+        private void SelectUnit(GameBoardUnit unit)
+        {
+            if (_activeSelections.Count == 0)
+            {
+                if (_manager.Board[unit.UnitIndex].Occupation == PlayerColor.None) return;
+                unit.ShowSelectionRect(true);
+                _activeSelections.Add(unit.UnitIndex);
+                _movePositions.Add(new BoardPosition(unit.UnitIndex));
+            }
+            else
+            {
+                if (_manager.Board[unit.UnitIndex].Occupation != PlayerColor.None) return;
+                _movePositions.Add(new BoardPosition(unit.UnitIndex));
+                DoCurrentMove();
+            }
+        }
+
+        private void SelectUnitMulti(GameBoardUnit unit)
+        {
+            if (_activeSelections.Count == 0)
+            {
+                if (_manager.Board[unit.UnitIndex].Occupation == PlayerColor.None) return;
+                unit.ShowSelectionRect(true);
+                _activeSelections.Add(unit.UnitIndex);
+                _movePositions.Add(new BoardPosition(unit.UnitIndex));
+            }
+            else
+            {
+                if (_manager.Board[unit.UnitIndex].Occupation != PlayerColor.None) return;
+                unit.ShowSelectionRect(true);
+                _activeSelections.Add(unit.UnitIndex);
+                _movePositions.Add(new BoardPosition(unit.UnitIndex));
+            }
+        }
+
+        private void DoCurrentMove()
+        {
+            string[] positions = _movePositions.Select(pos => pos.Representation).Distinct().ToArray();
+
+            try
+            {
+                _manager.DoMove(true, positions);
+            }
+            catch (InvalidMoveException e)
+            {
+                if (!string.IsNullOrEmpty(e.Message)) MessageBox.Show(e.Message, "Invalid move!", MessageBoxButton.OK, MessageBoxImage.Exclamation);
+            }
+
+            ClearSelections();
+        }
+
         private void GameUnit_MouseDown(object sender, MouseEventArgs args)
         {
             GameBoardUnit unit = args.Source as GameBoardUnit;
 
             if (args.LeftButton == MouseButtonState.Pressed)
             {
-                if (!_selecting)
-                {
-                    if (_manager.Board[unit.UnitIndex].Occupation == PlayerColor.None) return;
-
-                    unit.ShowSelectionRect();
-                    _activeSelections.Add(unit.UnitIndex);
-                    _movePositions.Add(new BoardPosition(unit.UnitIndex));
-                    _selecting = true;
-                }
-                else
-                {
-                    _selecting = false;
-                    unit.ShowSelectionRect();
-                    _activeSelections.Add(unit.UnitIndex);
-                    _movePositions.Add(new BoardPosition(unit.UnitIndex));
-
-                    string[] positions = _movePositions.Select(p => p.Representation).Distinct().ToArray();
-                    _manager.DoMove(true, positions);
-
-                    _movePositions.Clear();
-                }
+                SelectUnit(unit);
+            }
+            else if (args.RightButton == MouseButtonState.Pressed)
+            {
+                SelectUnitMulti(unit);
             }
         }
 
