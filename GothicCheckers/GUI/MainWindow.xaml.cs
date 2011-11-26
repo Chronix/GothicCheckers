@@ -49,6 +49,7 @@ namespace GothicCheckers.GUI
             gsw.Owner = this;
             gsw.ShowDialog();
             SetCurrentPlayerStatusText(PlayerColor.White);
+            //MainGameBoard.Manager = _manager;
             MainGameBoard.FullRedraw();
             _manager.StartGame();
         }

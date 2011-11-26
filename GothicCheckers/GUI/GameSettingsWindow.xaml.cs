@@ -36,7 +36,7 @@ namespace GothicCheckers.GUI
             this.DataContext = manager;
         }
 
-        // nechapu jak je mozne, ze pri temer-dokonalosti WPF nelze nejakym jednoduchym zpusobem "vypnout" maximize tlacitko
+        // "vypnuti" maximize tlacitka
         private void Window_SourceInitialized(object sender, EventArgs e)
         {
             IntPtr wnd = new WindowInteropHelper(this).Handle;

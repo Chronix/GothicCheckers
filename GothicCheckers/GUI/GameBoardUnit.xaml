@@ -1,0 +1,41 @@
+﻿<UserControl x:Class="GothicCheckers.GUI.GameBoardUnit"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:gui="clr-namespace:GothicCheckers.GUI"
+             mc:Ignorable="d" 
+             d:DesignHeight="100" d:DesignWidth="100"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <UserControl.Resources>
+        <RectangleGeometry x:Key="SelectionBounds" Rect="0,0 100,100" />
+        <RectangleGeometry x:Key="SquareSelectionGeometry" Rect="0,0 100,100" />
+        <Pen x:Key="SelectionPen" Brush="Red" Thickness="8" />
+        <DrawingBrush x:Key="SquareSelectionBrush" Stretch="Uniform">
+            <DrawingBrush.Drawing>
+                <DrawingGroup>
+                    <DrawingGroup.Children>
+                        <GeometryDrawing Geometry="{StaticResource SelectionBounds}" Brush="Transparent"/>
+                        <GeometryDrawing Geometry="{StaticResource SquareSelectionGeometry}" Pen="{StaticResource SelectionPen}"/>
+                    </DrawingGroup.Children>
+                </DrawingGroup>
+            </DrawingBrush.Drawing>
+        </DrawingBrush>
+    </UserControl.Resources>
+    <Viewbox Stretch="Uniform">
+        <Canvas Width="100" Height="100">
+            <Rectangle Fill="{Binding Background}" Width="100" Height="100" />
+            <Rectangle Fill="{StaticResource SquareSelectionBrush}" Width="100" Height="100" Visibility="Hidden" Name="SelectionRect" />
+            <Ellipse Fill="{Binding UnitColor}" Width="80" Height="80" Name="NormalPiece"  Canvas.ZIndex="2">
+                <Ellipse.RenderTransform>
+                    <TranslateTransform X="10" Y="10" />
+                </Ellipse.RenderTransform>
+            </Ellipse>
+            <Rectangle Fill="{Binding UnitColor}" Width="70" Height="70" Name="KingPiece" Visibility="Hidden">
+                <Rectangle.RenderTransform>
+                    <TranslateTransform X="15" Y="15" />
+                </Rectangle.RenderTransform>
+            </Rectangle>
+        </Canvas>
+    </Viewbox>
+</UserControl>

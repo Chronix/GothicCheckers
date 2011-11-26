@@ -78,8 +78,11 @@
     <Compile Include="GUI\DebugConsole.xaml.cs">
       <DependentUpon>DebugConsole.xaml</DependentUpon>
     </Compile>
-    <Compile Include="GUI\GameBoardControl.xaml.cs">
-      <DependentUpon>GameBoardControl.xaml</DependentUpon>
+    <Compile Include="GUI\GameBoardPanel.xaml.cs">
+      <DependentUpon>GameBoardPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="GUI\GameBoardUnit.xaml.cs">
+      <DependentUpon>GameBoardUnit.xaml</DependentUpon>
     </Compile>
     <Compile Include="GUI\GameSettingsWindow.xaml.cs">
       <DependentUpon>GameSettingsWindow.xaml</DependentUpon>
@@ -100,6 +103,7 @@
       <DependentUpon>GameSettingsWindowStrings.resx</DependentUpon>
     </Compile>
     <Compile Include="GUI\Utilities\FieldColorConverter.cs" />
+    <Compile Include="GUI\Utilities\GUIExtensionMethods.cs" />
     <Compile Include="GUI\Utilities\OccupationColorConverter.cs" />
     <Compile Include="GUI\Utilities\ParameterEqualityConverter.cs" />
     <Compile Include="AI\IAIEngine.cs" />
@@ -165,7 +169,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="GUI\GameBoardControl.xaml">
+    <Page Include="GUI\GameBoardPanel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="GUI\GameBoardUnit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
