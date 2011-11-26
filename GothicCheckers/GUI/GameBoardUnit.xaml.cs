@@ -32,6 +32,8 @@ namespace GothicCheckers.GUI
             set { SetValue(UnitColorProperty, value); }
         }
 
+        public int UnitIndex { get; set; }
+
         public void SetNormalPieceVisibility(Visibility visibility)
         {
             NormalPiece.Visibility = visibility;
@@ -45,21 +47,13 @@ namespace GothicCheckers.GUI
         public void ShowNormalPiece()
         {
             SetNormalPieceVisibility(System.Windows.Visibility.Visible);
-        }
-
-        public void HideNormalPiece()
-        {
-            SetNormalPieceVisibility(System.Windows.Visibility.Hidden);
+            SetKingPieceVisibility(System.Windows.Visibility.Hidden);
         }
 
         public void ShowKingPiece()
         {
             SetKingPieceVisibility(System.Windows.Visibility.Visible);
-        }
-
-        public void HideKingPiece()
-        {
-            SetKingPieceVisibility(System.Windows.Visibility.Hidden);
+            SetNormalPieceVisibility(System.Windows.Visibility.Hidden);
         }
 
         public void HidePieces()

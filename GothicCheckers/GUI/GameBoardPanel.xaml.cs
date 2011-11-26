@@ -25,6 +25,9 @@ namespace GothicCheckers.GUI
         private GameBoardUnit[] _units;
         private bool _selecting;
 
+        private List<int> _activeSelections;
+        private List<BoardPosition> _movePositions;
+
         public GameManager Manager
         {
             get { return _manager; }
@@ -39,14 +42,50 @@ namespace GothicCheckers.GUI
         {
             InitializeComponent();
             _units = new GameBoardUnit[GameBoard.BOARD_PIECE_COUNT];
+            _activeSelections = new List<int>();
+            _movePositions = new List<BoardPosition>();
         }
 
         public void FullRedraw()
         {
+            Redraw(Enumerable.Range(0, 64));
+        }
+
+        public void Redraw(IEnumerable<int> where)
+        {
+            foreach (int i in where)
+            {
+                RedrawUnit(i);
+            }
+        }
+
+        private void RedrawUnit(int index)
+        {
+            GameField field = _manager.Board[index];
+
+            switch (field.Occupation)
+            {
+                case PlayerColor.Black: _units[index].UnitColor = Brushes.Black; break;
+                case PlayerColor.White: _units[index].UnitColor = Brushes.White; break;
+                case PlayerColor.None: _units[index].HidePieces(); _units[index].HideSelectionRect(); return;
+            }
+            
+            if (field.Piece == PieceType.King)
+            {
+                _units[index].ShowKingPiece();
+            }
+            else
+            {
+                _units[index].ShowNormalPiece();
+            }
+
+            _units[index].HideSelectionRect();
         }
 
         private void Initialize()
         {
+            _manager.Board.VisualChanged += new EventHandler<VisualChangedEventArgs>(Board_VisualChanged);
+
             for (int i = 0; i < GameBoard.BOARD_PIECE_COUNT; ++i)
             {
                 _units[i] = InitUnit(i);
@@ -57,6 +96,7 @@ namespace GothicCheckers.GUI
         private GameBoardUnit InitUnit(int index)
         {
             GameBoardUnit unit = new GameBoardUnit();
+            unit.UnitIndex = index;
             unit.Background = GetUnitBackground(index);
 
             switch (_manager.Board[index].Occupation)
@@ -84,15 +124,31 @@ namespace GothicCheckers.GUI
             {
                 if (!_selecting)
                 {
+                    if (_manager.Board[unit.UnitIndex].Occupation == PlayerColor.None) return;
+
                     unit.ShowSelectionRect();
+                    _activeSelections.Add(unit.UnitIndex);
+                    _movePositions.Add(new BoardPosition(unit.UnitIndex));
                     _selecting = true;
                 }
                 else
                 {
                     _selecting = false;
-                    unit.HideSelectionRect();
+                    unit.ShowSelectionRect();
+                    _activeSelections.Add(unit.UnitIndex);
+                    _movePositions.Add(new BoardPosition(unit.UnitIndex));
+
+                    string[] positions = _movePositions.Select(p => p.Representation).Distinct().ToArray();
+                    _manager.DoMove(true, positions);
+
+                    _movePositions.Clear();
                 }
             }
+        }
+
+        private void Board_VisualChanged(object sender, VisualChangedEventArgs e)
+        {
+            Redraw(e.ChangedIndices);
         }
     }
 }

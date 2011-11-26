@@ -97,12 +97,6 @@ namespace GothicCheckers
             }
 
             ExceptionProvider.ThrowInvalidMoveIf(!IsPlayersTurn(move.Player), GUI.Localization.ErrorMessages.WaitYourTurn);
-
-#if DEBUG
-            LastTurnValidMoves.Clear();
-            LastTurnValidMoves.AddRange(RuleEngine.GetAllMovesForPlayer(_board, move.Player));
-#endif
-
             ExceptionProvider.ThrowInvalidMoveIf(!RuleEngine.ValidateMove(_board, move), GUI.Localization.ErrorMessages.InvalidMoveGeneric);
 
             _board.DoMove(move);
