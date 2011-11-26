@@ -137,7 +137,14 @@ namespace GothicCheckers
 
             moves[moves.Length - 1] = new SimpleMove(player, through.Last(), to, king, true);
 
-            cMove.Moves.AddRange(moves);
+            var nonUpgradingMoves = moves.TakeWhile(sm => !sm.IsUpgrade);
+            cMove.Moves.AddRange(nonUpgradingMoves);
+
+            if (moves.Length > cMove.Moves.Count)
+            {
+                cMove.Moves.Add(moves[cMove.Moves.Count]); //todo: ujasnit pravidla ohledne pokracovani skoku pri zmene pesak -> dama
+            }
+
             return cMove;
         }
 

@@ -89,14 +89,14 @@ namespace GothicCheckers.AI
             return alpha;
         }
 
-        private int Winning(int val)
+        private static int Winning(int val)
         {
             if (val > LOT) return val + Evaluator.N;
             if (val < -LOT) return val - Evaluator.N;
             return val;
         }
 
-        private int Losing(int val)
+        private static int Losing(int val)
         {
             if (val > LOT) return val - Evaluator.N;
             if (val < -LOT) return val + Evaluator.N;

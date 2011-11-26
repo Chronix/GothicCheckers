@@ -23,8 +23,11 @@ namespace GothicCheckers
 
         public static void ThrowIf<T>(bool condition, string message = null) where T : Exception
         {
-            ConstructorInfo ctor = typeof(T).GetConstructor(new Type[] { typeof(string) });
-            throw ctor.Invoke(new object[] { message }) as T;
+            if (condition)
+            {
+                ConstructorInfo ctor = typeof(T).GetConstructor(new Type[] { typeof(string) });
+                throw ctor.Invoke(new object[] { message }) as T;
+            }
         }
     }
 }

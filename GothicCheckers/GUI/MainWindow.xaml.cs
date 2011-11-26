@@ -40,6 +40,15 @@ namespace GothicCheckers.GUI
             _manager.MoveDone += new EventHandler(_manager_MoveDone);
 
             MainGameBoard.Manager = _manager;
+
+            try
+            {
+                GameUtils.EnsureSaveDirectory();
+            }
+            catch
+            {
+                MessageBox.Show(Localization.ErrorMessages.SaveDirectoryError, Localization.ErrorMessages.CaptionError, MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         #region MAIN MENU COMMAND HANDLERS
@@ -67,6 +76,11 @@ namespace GothicCheckers.GUI
                 try
                 {
                     SaveLoadManager.LoadGame(ofd.FileName, ref _manager);
+                    
+                }
+                catch (FormatException)
+                {
+                    MessageBox.Show(Localization.ErrorMessages.SaveFormatWarning, Localization.ErrorMessages.CaptionWarning, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 catch
                 {

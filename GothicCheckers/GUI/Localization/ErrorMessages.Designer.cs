@@ -70,7 +70,16 @@ namespace GothicCheckers.GUI.Localization {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Invalid move (maybe you have to jump?)!.
+        ///   Looks up a localized string similar to Warning!.
+        /// </summary>
+        public static string CaptionWarning {
+            get {
+                return ResourceManager.GetString("CaptionWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Invalid move!.
         /// </summary>
         public static string InvalidMoveGeneric {
             get {
@@ -93,6 +102,24 @@ namespace GothicCheckers.GUI.Localization {
         public static string InvalidSaveFile {
             get {
                 return ResourceManager.GetString("InvalidSaveFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Error while checking/creating directory for saved games!.
+        /// </summary>
+        public static string SaveDirectoryError {
+            get {
+                return ResourceManager.GetString("SaveDirectoryError", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to You are attempting to load an old or unknown version of a saved game. This may fail..
+        /// </summary>
+        public static string SaveFormatWarning {
+            get {
+                return ResourceManager.GetString("SaveFormatWarning", resourceCulture);
             }
         }
         

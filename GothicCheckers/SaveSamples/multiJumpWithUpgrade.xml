@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<GothicCheckers Version="1.0">
+  <GameSettings>
+    <Difficulty White="0" Black="0" />
+    <Control White="Human" Black="Human" />
+  </GameSettings>
+  <Moves>
+    <Move Player="White" From="C2" To="C3" KingMove="False" />
+    <Move Player="Black" From="C7" To="C6" KingMove="False" />
+    <Move Player="White" From="H2" To="H3" KingMove="False" />
+    <Move Player="Black" From="C8" To="C7" KingMove="False" />
+    <Move Player="White" From="H1" To="H2" KingMove="False" />
+    <Move Player="Black" From="D7" To="D6" KingMove="False" />
+    <Move Player="White" From="C3" To="C4" KingMove="False" />
+    <Move Player="Black" From="C6" To="D5" KingMove="False" />
+  </Moves>
+</GothicCheckers>

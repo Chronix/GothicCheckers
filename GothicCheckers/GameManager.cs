@@ -9,7 +9,7 @@ using GothicCheckers.AI;
 
 namespace GothicCheckers
 {
-    public class GameManager : INotifyPropertyChanged
+    public class GameManager : IDisposable
     {
         private GameReplayState _replayState;
         private GameBoard _board;
@@ -27,9 +27,7 @@ namespace GothicCheckers
         public event EventHandler<PlayerEventArgs> PlayersSwapped;
         public event EventHandler MoveDone;
 
-#if DEBUG
-        public ObservableCollection<IMove> LastTurnValidMoves { get; private set; }
-#endif
+        private bool _disposed;
 
         public GameReplayState ReplayState
         {
@@ -68,10 +66,6 @@ namespace GothicCheckers
             _aiEngine.BestMoveChosen += new EventHandler(_aiEngine_BestMoveChosen);
 
             CurrentPlayer = PlayerColor.White;
-
-#if DEBUG
-            LastTurnValidMoves = new ObservableCollection<IMove>();
-#endif
         }
 
         public void Reset()
@@ -79,6 +73,12 @@ namespace GothicCheckers
             History.Clear();
             _board.Reset();
             CurrentPlayer = PlayerColor.White;
+        }
+
+        public void Dispose()
+        {
+            if (!_disposed) Dispose(true);
+            _disposed = true;
         }
 
         public void DoMove(bool addToHistory, params string[] positions)
@@ -104,7 +104,7 @@ namespace GothicCheckers
 
             if (addToHistory)
             {
-                History.Add(move);
+                History.Add(new GameHistoryItem(move));
             }
 
             OnMoveDone();
@@ -113,7 +113,7 @@ namespace GothicCheckers
 
         public void PlayHistory()
         {
-            for (int i = 1; i < History.Count; ++i) _board.DoMove(History[i], true);
+            for (int i = 1; i < History.Count; ++i) _board.DoMove(History[i].Move, true);
         }
 
         public void StartGame()
@@ -141,10 +141,18 @@ namespace GothicCheckers
             }
         }
 
+        private void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _aiEngine.Dispose();
+            }
+        }
+
         private void _aiEngine_BestMoveChosen(object sender, EventArgs e)
         {
             _board.DoMove(_aiEngine.BestMove);
-            History.Add(_aiEngine.BestMove);
+            History.Add(new GameHistoryItem(_aiEngine.BestMove));
             SwapPlayers();
             OnMoveDone();
             Play();

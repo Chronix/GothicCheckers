@@ -26,6 +26,7 @@ namespace GothicCheckers.GUI
         public GameBoardUnit()
         {
             InitializeComponent();
+            SelectionRect.Fill = (Brush)FindResource("SquareSelectionBrush");
         }
 
         public Brush UnitColor
@@ -70,14 +71,16 @@ namespace GothicCheckers.GUI
             {
                 if (!_isMulti)
                 {
-                    SelectionRect.Fill = (Brush)FindResource("SquareSelectionBrush");
+                    SelectionRect.Fill = (Brush)FindResource("SquareMultiSelectionBrush");
+                    _isMulti = true;
                 }                
             }
             else
             {
                 if (_isMulti)
                 {
-                    SelectionRect.Fill = (Brush)FindResource("SquareMultiSelectionBrush");
+                    SelectionRect.Fill = (Brush)FindResource("SquareSelectionBrush");
+                    _isMulti = false;
                 }
             }
 

@@ -127,7 +127,7 @@ namespace GothicCheckers.GUI
             if (_activeSelections.Count == 0)
             {
                 if (_manager.Board[unit.UnitIndex].Occupation == PlayerColor.None) return;
-                unit.ShowSelectionRect(true);
+                unit.ShowSelectionRect();
                 _activeSelections.Add(unit.UnitIndex);
                 _movePositions.Add(new BoardPosition(unit.UnitIndex));
             }

@@ -7,7 +7,32 @@ using System.Text;
 
 namespace GothicCheckers
 {
-    public class GameHistory : ObservableCollection<IMove>
+    public class GameHistoryItem // binding listbox/equality hack
+    {
+        public IMove Move { get; private set; }
+
+        public GameHistoryItem(IMove move)
+        {
+            Move = move;
+        }
+
+        public override string ToString()
+        {
+            return Move.ToString();
+        }
+
+        public override bool Equals(object obj)
+        {
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return base.GetHashCode();
+        }
+    }
+
+    public class GameHistory : ObservableCollection<GameHistoryItem>
     {
         public const char RIGHT_ARROW_SYMBOL = (char)0x2192;
 
@@ -36,7 +61,7 @@ namespace GothicCheckers
             else base.RemoveItem(index);
         }
 
-        protected override void InsertItem(int index, IMove item)
+        protected override void InsertItem(int index, GameHistoryItem item)
         {
             if (index == 0) return;
             else base.InsertItem(index, item);
@@ -48,7 +73,7 @@ namespace GothicCheckers
             else base.MoveItem(oldIndex, newIndex);
         }
 
-        protected override void SetItem(int index, IMove item)
+        protected override void SetItem(int index, GameHistoryItem item)
         {
             if (index == 0) return;
             else base.SetItem(index, item);
@@ -56,7 +81,7 @@ namespace GothicCheckers
 
         private void EnsureFirst()
         {
-            this.Items.Add(InitialState);
+            this.Items.Add(new GameHistoryItem(InitialState));
         }
 
         private class InitialGameState : IMove
@@ -122,6 +147,11 @@ namespace GothicCheckers
             {
                 return false;
             }
+
+            bool IMove.KingMove
+            {
+                get { throw new NotImplementedException(); }
+            }
             #endregion
 
             internal InitialGameState() { }
@@ -129,12 +159,6 @@ namespace GothicCheckers
             public override string ToString()
             {
                 return GUI.Localization.MainWindowStrings.GameHistory_InitialState;
-            }
-
-
-            bool IMove.KingMove
-            {
-                get { throw new NotImplementedException(); }
             }
         }
     }

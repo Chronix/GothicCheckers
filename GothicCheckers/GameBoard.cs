@@ -61,21 +61,23 @@ namespace GothicCheckers
         {
             _fields = new GameField[BOARD_PIECE_COUNT];
 
-            GameField[,] tempFields = new GameField[BOARD_SIDE_SIZE, BOARD_SIDE_SIZE];
+            GameField[][] tempFields = new GameField[BOARD_SIDE_SIZE][];
 
             for (int i = 0; i < BOARD_SIDE_SIZE; ++i)
             {
+                tempFields[i] = new GameField[BOARD_SIDE_SIZE];
+
                 for (int j = 0; j < BOARD_SIDE_SIZE; ++j)
                 {
-                    tempFields[i, j] = new GameField();
-                    tempFields[i, j].Position = new BoardPosition(j, i);
+                    tempFields[i][j] = new GameField();
+                    tempFields[i][j].Position = new BoardPosition(j, i);
                 }
 
                 switch (i)
                 {
-                    case 0: for (int j = 0; j < BOARD_SIDE_SIZE; ++j) { tempFields[i, j].Occupation = PlayerColor.Black; tempFields[i, j].Piece = PieceType.Normal; } break;
+                    case 0: for (int j = 0; j < BOARD_SIDE_SIZE; ++j) { tempFields[i][j].Occupation = PlayerColor.Black; tempFields[i][j].Piece = PieceType.Normal; } break;
                     case 1: goto case 0;
-                    case 6: for (int j = 0; j < BOARD_SIDE_SIZE; ++j) { tempFields[i, j].Occupation = PlayerColor.White; tempFields[i, j].Piece = PieceType.Normal; } break;
+                    case 6: for (int j = 0; j < BOARD_SIDE_SIZE; ++j) { tempFields[i][j].Occupation = PlayerColor.White; tempFields[i][j].Piece = PieceType.Normal; } break;
                     case 7: goto case 6;
                     default: break;
                 }
@@ -83,9 +85,12 @@ namespace GothicCheckers
 
             int index = 0;
 
-            foreach (GameField f in tempFields)
+            for (int i = 0; i < BOARD_SIDE_SIZE; ++i)
             {
-                _fields[index++] = f;
+                for (int j = 0; j < BOARD_SIDE_SIZE; ++j)
+                {
+                    _fields[index++] = tempFields[i][j];
+                }
             }
 
             IdleMoves = 0;

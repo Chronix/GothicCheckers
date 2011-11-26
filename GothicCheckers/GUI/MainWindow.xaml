@@ -114,7 +114,6 @@
                 <ColumnDefinition Width="200" />
             </Grid.ColumnDefinitions>
             <Border Grid.Column="0" BorderBrush="LightBlue" Background="DarkGray"  BorderThickness="1, 1, 1, 1" Margin="5" x:Name="BoardBorder">
-                <!--<GUI:GameBoardControl x:Name="MainGameBoard" />-->
                 <GUI:GameBoardPanel x:Name="MainGameBoard" />
             </Border>
             <StackPanel Grid.Column="1" Orientation="Vertical">

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -24,6 +24,14 @@ namespace GothicCheckers
                     return PlayerColor.Black;
                 default:
                     throw new ArgumentException();
+            }
+        }
+
+        public static void EnsureSaveDirectory()
+        {
+            if (!Directory.Exists("Save"))
+            {
+                Directory.CreateDirectory("Save");
             }
         }
     }

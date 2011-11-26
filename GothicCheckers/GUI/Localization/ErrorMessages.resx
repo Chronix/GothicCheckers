@@ -120,14 +120,23 @@
   <data name="CaptionError" xml:space="preserve">
     <value>Error!</value>
   </data>
+  <data name="CaptionWarning" xml:space="preserve">
+    <value>Warning!</value>
+  </data>
   <data name="InvalidMoveGeneric" xml:space="preserve">
-    <value>Invalid move (maybe you have to jump?)!</value>
+    <value>Invalid move!</value>
   </data>
   <data name="InvalidMoveNotEnoughPositions" xml:space="preserve">
     <value>Invalid move, less than 2 positions specified!</value>
   </data>
   <data name="InvalidSaveFile" xml:space="preserve">
     <value>Invalid save game file!</value>
+  </data>
+  <data name="SaveDirectoryError" xml:space="preserve">
+    <value>Error while checking/creating directory for saved games!</value>
+  </data>
+  <data name="SaveFormatWarning" xml:space="preserve">
+    <value>You are attempting to load an old or unknown version of a saved game. This may fail.</value>
   </data>
   <data name="WaitYourTurn" xml:space="preserve">
     <value>Wait your turn!</value>
