@@ -70,6 +70,7 @@ namespace GothicCheckers.GUI
             ofd.Filter = "Saved games (.xml)|*.xml";
             ofd.CheckFileExists = true;
             ofd.Multiselect = false;
+            ofd.InitialDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Save");
 
             if (ofd.ShowDialog().Value)
             {
@@ -87,6 +88,7 @@ namespace GothicCheckers.GUI
 
                 _manager.PlayHistory();
                 MainGameBoard.FullRedraw();
+                //_manager.History.Refresh();
             }
         }
 
@@ -95,6 +97,7 @@ namespace GothicCheckers.GUI
             SaveFileDialog sfd = new SaveFileDialog();
             sfd.Filter = "Saved Games (.xml)|*.xml";
             sfd.AddExtension = true;
+            sfd.InitialDirectory = System.IO.Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Save");
 
             if (sfd.ShowDialog().Value)
             {

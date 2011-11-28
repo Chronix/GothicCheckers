@@ -67,7 +67,7 @@ namespace GothicCheckers
         {
             var result = new List<List<BoardPosition>>();
 
-            Collection<JumpTreeNode> leaves = GetLeaves();
+            var leaves = GetLeaves();
 
             foreach (JumpTreeNode leaf in leaves)
             {
@@ -87,7 +87,7 @@ namespace GothicCheckers
             return result.ToArray();
         }
 
-        public Collection<JumpTreeNode> GetLeaves(bool toCheckOnly = false)
+        public IEnumerable<JumpTreeNode> GetLeaves(bool toCheckOnly = false)
         {
             Collection<JumpTreeNode> leaves = new Collection<JumpTreeNode>();
             Queue<JumpTreeNode> row = new Queue<JumpTreeNode>();

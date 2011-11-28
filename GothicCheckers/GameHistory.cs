@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 
@@ -49,6 +50,11 @@ namespace GothicCheckers
             else RemoveAt(Count - 1);
         }
 
+        public void Refresh()
+        {
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+        }
+
         protected override void ClearItems()
         {
             base.ClearItems();
@@ -82,6 +88,7 @@ namespace GothicCheckers
         private void EnsureFirst()
         {
             this.Items.Add(new GameHistoryItem(InitialState));
+            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, this.Items[0], 0));
         }
 
         private class InitialGameState : IMove
