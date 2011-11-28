@@ -10,6 +10,8 @@ namespace GothicCheckers
     {
         public const string SaveFileVersion = "1.2";
 
+        public static event EventHandler OldFormatLoading;
+
         public static void SaveGame(string filePath, GameManager manager)
         {
             using (XmlTextWriter w = new XmlTextWriter(filePath, Encoding.UTF8))
@@ -81,77 +83,82 @@ namespace GothicCheckers
             XmlDocument xDoc = new XmlDocument();
             xDoc.Load(filePath);
 
-            try
             {
                 XmlNode root = xDoc.SelectSingleNode("GothicCheckers");
                 XmlAttribute formatVersionAttr = root.Attributes["FormatVersion"];
 
-                ExceptionProvider.ThrowIf<FormatException>(formatVersionAttr == null || formatVersionAttr.Value != SaveFileVersion);
-            }
-            finally
-            {
-                XmlNode diffNode = xDoc.SelectSingleNode("//GameSettings/Difficulty");
-                XmlNode ctrlNode = xDoc.SelectSingleNode("//GameSettings/Control");
-
-                XmlNodeList moveNodes = xDoc.SelectNodes("//Moves/Move");
-
-                GameManager.WhiteDifficulty = (GameDifficulty)Enum.Parse(typeof(GameDifficulty), diffNode.Attributes["White"].Value);
-                GameManager.BlackDifficulty = (GameDifficulty)Enum.Parse(typeof(GameDifficulty), diffNode.Attributes["Black"].Value);
-
-                manager.WhiteControl = (PlayerControlType)Enum.Parse(typeof(PlayerControlType), ctrlNode.Attributes["White"].Value);
-                manager.BlackControl = (PlayerControlType)Enum.Parse(typeof(PlayerControlType), ctrlNode.Attributes["Black"].Value);
-
-                foreach (XmlNode moveNode in moveNodes)
+                if (formatVersionAttr == null || formatVersionAttr.Value != SaveFileVersion)
                 {
-                    PlayerColor player = (PlayerColor)Enum.Parse(typeof(PlayerColor), moveNode.Attributes["Player"].Value);
-                    string from = moveNode.Attributes["From"].Value;
-                    string to = moveNode.Attributes["To"].Value;
-                    string through = moveNode.Attributes["Through"] == null ? string.Empty : moveNode.Attributes["Through"].Value;
+                    OnOldFormatLoading();
+                }
+            }
 
-                    IMove move = null;
+            XmlNode diffNode = xDoc.SelectSingleNode("//GameSettings/Difficulty");
+            XmlNode ctrlNode = xDoc.SelectSingleNode("//GameSettings/Control");
 
-                    if (string.IsNullOrEmpty(through))
+            XmlNodeList moveNodes = xDoc.SelectNodes("//Moves/Move");
+
+            GameManager.WhiteDifficulty = (GameDifficulty)Enum.Parse(typeof(GameDifficulty), diffNode.Attributes["White"].Value);
+            GameManager.BlackDifficulty = (GameDifficulty)Enum.Parse(typeof(GameDifficulty), diffNode.Attributes["Black"].Value);
+
+            manager.WhiteControl = (PlayerControlType)Enum.Parse(typeof(PlayerControlType), ctrlNode.Attributes["White"].Value);
+            manager.BlackControl = (PlayerControlType)Enum.Parse(typeof(PlayerControlType), ctrlNode.Attributes["Black"].Value);
+
+            foreach (XmlNode moveNode in moveNodes)
+            {
+                PlayerColor player = (PlayerColor)Enum.Parse(typeof(PlayerColor), moveNode.Attributes["Player"].Value);
+                string from = moveNode.Attributes["From"].Value;
+                string to = moveNode.Attributes["To"].Value;
+                string through = moveNode.Attributes["Through"] == null ? string.Empty : moveNode.Attributes["Through"].Value;
+
+                IMove move = null;
+
+                if (string.IsNullOrEmpty(through))
+                {
+                    move = new SimpleMove(player, new BoardPosition(from), new BoardPosition(to), bool.Parse(moveNode.Attributes["KingMove"].Value), false);
+                }
+                else
+                {
+                    move = CompoundMove.FromSaveData(player, from, to, through, bool.Parse(moveNode.Attributes["KingMove"].Value));
+                }
+
+                if (moveNode.HasChildNodes)
+                {
+                    move.IsCapture = true;
+
+                    if (move is SimpleMove)
                     {
-                        move = new SimpleMove(player, new BoardPosition(from), new BoardPosition(to), bool.Parse(moveNode.Attributes["KingMove"].Value), false);
+                        move.Capture = new GameField
+                        {
+                            Occupation = player == PlayerColor.Black ? PlayerColor.White : PlayerColor.Black,
+                            Position = new BoardPosition(moveNode.FirstChild.Attributes["Position"].Value),
+                            Piece = (PieceType)Enum.Parse(typeof(PieceType), moveNode.FirstChild.Attributes["Piece"].Value)
+                        };
                     }
                     else
                     {
-                        move = CompoundMove.FromSaveData(player, from, to, through, bool.Parse(moveNode.Attributes["KingMove"].Value));
-                    }
+                        CompoundMove cMove = move as CompoundMove;
 
-                    if (moveNode.HasChildNodes)
-                    {
-                        move.IsCapture = true;
-
-                        if (move is SimpleMove)
+                        for (int i = 0; i < cMove.Length; ++i)
                         {
-                            move.Capture = new GameField
+                            cMove.Moves[i].IsCapture = true;
+                            cMove.Moves[i].Capture = new GameField
                             {
                                 Occupation = player == PlayerColor.Black ? PlayerColor.White : PlayerColor.Black,
-                                Position = new BoardPosition(moveNode.FirstChild.Attributes["Position"].Value),
-                                Piece = (PieceType)Enum.Parse(typeof(PieceType), moveNode.FirstChild.Attributes["Piece"].Value)
+                                Position = new BoardPosition(moveNode.ChildNodes[i].Attributes["Position"].Value),
+                                Piece = (PieceType)Enum.Parse(typeof(PieceType), moveNode.ChildNodes[i].Attributes["Piece"].Value)
                             };
                         }
-                        else
-                        {
-                            CompoundMove cMove = move as CompoundMove;
-
-                            for (int i = 0; i < cMove.Length; ++i)
-                            {
-                                cMove.Moves[i].IsCapture = true;
-                                cMove.Moves[i].Capture = new GameField
-                                {
-                                    Occupation = player == PlayerColor.Black ? PlayerColor.White : PlayerColor.Black,
-                                    Position = new BoardPosition(moveNode.ChildNodes[i].Attributes["Position"].Value),
-                                    Piece = (PieceType)Enum.Parse(typeof(PieceType), moveNode.ChildNodes[i].Attributes["Piece"].Value)
-                                };
-                            }
-                        }
                     }
-
-                    manager.History.Add(new GameHistoryItem(move));
                 }
+
+                manager.History.Add(new GameHistoryItem(move));
             }
+        }
+
+        private static void OnOldFormatLoading()
+        {
+            if (OldFormatLoading != null) OldFormatLoading(null, EventArgs.Empty);
         }
     }
 }

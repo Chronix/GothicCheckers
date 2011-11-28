@@ -39,6 +39,8 @@ namespace GothicCheckers.GUI
             _manager.PlayersSwapped += new EventHandler<PlayerEventArgs>(_manager_PlayersSwapped);
             _manager.MoveDone += new EventHandler(_manager_MoveDone);
 
+            SaveLoadManager.OldFormatLoading += new EventHandler(SaveLoadManager_OldFormatLoading);
+
             MainGameBoard.Manager = _manager;
 
             try
@@ -77,10 +79,6 @@ namespace GothicCheckers.GUI
                 {
                     SaveLoadManager.LoadGame(ofd.FileName, ref _manager);
                     
-                }
-                catch (FormatException)
-                {
-                    MessageBox.Show(Localization.ErrorMessages.SaveFormatWarning, Localization.ErrorMessages.CaptionWarning, MessageBoxButton.OK, MessageBoxImage.Warning);
                 }
                 catch
                 {
@@ -258,6 +256,11 @@ namespace GothicCheckers.GUI
         private void _manager_MoveDone(object sender, EventArgs e)
         {
             lbHistory.ScrollIntoView(lbHistory.Items[lbHistory.Items.Count - 1]);
+        }
+
+        private void SaveLoadManager_OldFormatLoading(object sender, EventArgs e)
+        {
+            MessageBox.Show(Localization.ErrorMessages.SaveFormatWarning, Localization.ErrorMessages.CaptionWarning, MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         private void SetCurrentPlayerStatusText(PlayerColor player)
