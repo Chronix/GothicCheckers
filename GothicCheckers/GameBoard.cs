@@ -218,6 +218,18 @@ namespace GothicCheckers
             return bps.Select(bp => TrueIndexOf(bp));
         }
 
+        public void SetCapture(IMove move)
+        {
+            IList<BoardPosition> mid = BoardPosition.GetPositionsBetween(move.FromField, move.ToField);
+            move.Capture = mid.Select(bp => this[bp]).Where(f => f.Occupation == GameUtils.OtherPlayer(move.Player)).SingleOrDefault();
+
+            if (move.Capture != null)
+            {
+                move.Capture = move.Capture.Copy();
+                move.IsCapture = true;
+            }
+        }
+
         private IEnumerable<int> DoSimpleMove(SimpleMove move)
         {
             PieceType pType = this[move.FromField].Piece;
@@ -239,7 +251,6 @@ namespace GothicCheckers
                 else
                 {
                     IList<BoardPosition> mid = BoardPosition.GetPositionsBetween(move.FromField, move.ToField);
-                    move.Capture = mid.Select(bp => this[bp]).Where(f => f.Occupation == GameUtils.OtherPlayer(move.Player)).Single().Copy();
                     this[move.Capture.Position].Occupation = PlayerColor.None;
                     this[move.Capture.Position].Piece = PieceType.None;
                     changedIndices.AddRange(TrueIndicesOf(mid));
@@ -259,6 +270,7 @@ namespace GothicCheckers
 
             foreach (var simpleMove in move.Moves)
             {
+                SetCapture(simpleMove);
                 changedIndices.AddRange(DoSimpleMove(simpleMove));
             }
 

@@ -39,7 +39,7 @@ namespace GothicCheckers
 
                 w.WriteStartElement("Moves");
 
-                foreach (IMove move in manager.History.Skip(1))
+                foreach (IMove move in manager.History.Skip(1).Select(ghi => ghi.Move))
                 {
                     w.WriteStartElement("Move");
                     w.WriteAttributeString("Player", move.Player.ToString());

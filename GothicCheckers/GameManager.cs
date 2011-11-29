@@ -89,7 +89,9 @@ namespace GothicCheckers
 
             if (positions.Length == 2)
             {
-                move = new SimpleMove(_board[positions[0]].Occupation, positions[0], positions[1], _board[positions[0]].Piece == PieceType.King, BoardPosition.GetPositionBetween(positions[0], positions[1]) != BoardPosition.Invalid);
+                bool kingMove = _board[positions[0]].Piece == PieceType.King;
+                move = new SimpleMove(_board[positions[0]].Occupation, positions[0], positions[1], kingMove);
+                _board.SetCapture(move);
             }
             else
             {

@@ -8,8 +8,9 @@ using System.Text;
 
 namespace GothicCheckers
 {
-    public class GameHistoryItem // binding listbox/equality hack
+    public class GameHistoryItem
     {
+        public int ID { get; set; }
         public IMove Move { get; private set; }
 
         public GameHistoryItem(IMove move)
@@ -24,7 +25,11 @@ namespace GothicCheckers
 
         public override bool Equals(object obj)
         {
-            return false;
+            GameHistoryItem item = obj as GameHistoryItem;
+
+            if (item == null) return false;
+
+            return Move.Equals(item.Move) && ID == item.ID;
         }
 
         public override int GetHashCode()
@@ -36,8 +41,7 @@ namespace GothicCheckers
     public class GameHistory : ObservableCollection<GameHistoryItem>
     {
         public const char RIGHT_ARROW_SYMBOL = (char)0x2192;
-
-        private static readonly InitialGameState InitialState = new InitialGameState();
+        private static int _nextID = 0;
 
         public GameHistory()
         {
@@ -70,7 +74,11 @@ namespace GothicCheckers
         protected override void InsertItem(int index, GameHistoryItem item)
         {
             if (index == 0) return;
-            else base.InsertItem(index, item);
+            else
+            {
+                item.ID = _nextID++;
+                base.InsertItem(index, item);
+            }
         }
 
         protected override void MoveItem(int oldIndex, int newIndex)
@@ -82,13 +90,20 @@ namespace GothicCheckers
         protected override void SetItem(int index, GameHistoryItem item)
         {
             if (index == 0) return;
-            else base.SetItem(index, item);
+            else
+            {
+                item.ID = _nextID++;
+                base.SetItem(index, item);
+            }
         }
 
         private void EnsureFirst()
         {
-            this.Items.Add(new GameHistoryItem(InitialState));
-            OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, this.Items[0], 0));
+            if (Count == 0)
+            {
+                this.Items.Add(new GameHistoryItem(InitialGameState.Instance) { ID = _nextID++ });
+                OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, this.Items[0], 0));
+            }
         }
 
         private class InitialGameState : IMove
@@ -161,7 +176,9 @@ namespace GothicCheckers
             }
             #endregion
 
-            internal InitialGameState() { }
+            public static readonly InitialGameState Instance = new InitialGameState();
+
+            private InitialGameState() { }
 
             public override string ToString()
             {

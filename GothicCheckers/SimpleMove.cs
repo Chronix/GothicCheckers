@@ -19,8 +19,8 @@ namespace GothicCheckers
         {
             get 
             {
-                if (Reversed) return FromField.IsUpgradingPosition(Player);
-                else return ToField.IsUpgradingPosition(Player); 
+                if (Reversed) return FromField.IsUpgradingPosition(Player) && KingMove;
+                else return ToField.IsUpgradingPosition(Player) && !KingMove; 
             }
         }
 
@@ -33,12 +33,17 @@ namespace GothicCheckers
             get { return 1; }
         }
 
-        public SimpleMove(PlayerColor player, BoardPosition from, BoardPosition to, bool kingMove, bool isCapture)
+        public SimpleMove(PlayerColor player, BoardPosition from, BoardPosition to, bool kingMove)
         {
             Player = player;
             FromField = from;
             ToField = to;
             KingMove = kingMove;
+        }
+
+        public SimpleMove(PlayerColor player, BoardPosition from, BoardPosition to, bool kingMove, bool isCapture)
+            : this(player, from, to, kingMove)
+        {
             IsCapture = isCapture;
         }
 
