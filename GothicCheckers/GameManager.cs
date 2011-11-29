@@ -115,7 +115,13 @@ namespace GothicCheckers
 
         public void PlayHistory()
         {
-            for (int i = 1; i < History.Count; ++i) _board.DoMove(History[i].Move, true);
+            for (int i = 1; i < History.Count; ++i)
+            {
+                _board.DoMove(History[i].Move, true);
+            }
+
+            CurrentPlayer = GameUtils.OtherPlayer(History.Last().Move.Player);
+            OnPlayersSwapped();
         }
 
         public void StartGame()
@@ -163,7 +169,7 @@ namespace GothicCheckers
         private void SwapPlayers()
         {
             CurrentPlayer = GameUtils.OtherPlayer(CurrentPlayer);
-            OnPlayersSwapped(CurrentPlayer);
+            OnPlayersSwapped();
         }
 
         private bool IsPlayersTurn(PlayerColor movePlayer)
@@ -181,9 +187,9 @@ namespace GothicCheckers
             if (GameEnded != null) GameEnded(this, new PlayerEventArgs(winner));
         }
 
-        private void OnPlayersSwapped(PlayerColor newPlayer)
+        private void OnPlayersSwapped()
         {
-            if (PlayersSwapped != null) PlayersSwapped(this, new PlayerEventArgs(newPlayer));
+            if (PlayersSwapped != null) PlayersSwapped(this, new PlayerEventArgs(CurrentPlayer));
         }
 
         private void OnMoveDone()

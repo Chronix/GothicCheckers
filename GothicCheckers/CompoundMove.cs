@@ -5,39 +5,63 @@ using System.Text;
 
 namespace GothicCheckers
 {
+    /// <summary>
+    /// Reprezentuje složený tah, neboli vícenásobný skok.
+    /// </summary>
     public sealed class CompoundMove : IMove, ICopyable<CompoundMove>, IEquatable<CompoundMove>
     {
+        /// <summary>
+        /// Kolekce obsahující jednotlivé "podtahy".
+        /// </summary>
         public Collection<SimpleMove> Moves { get; private set; }
 
+        /// <summary>
+        /// Výchozí pozice tahu.
+        /// </summary>
         public BoardPosition FromField
         {
             get { return Moves[0].FromField; }
             set { throw new NotSupportedException(); }
         }
 
+        /// <summary>
+        /// Konečná pozice tahu.
+        /// </summary>
         public BoardPosition ToField
         {
             get { return Moves.Last().ToField; }
             set { throw new NotSupportedException(); }
         }
 
+        /// <summary>
+        /// Hráč, kterému tah patří.
+        /// </summary>
         public PlayerColor Player
         {
             get { return Moves[0].Player; }
             set { throw new NotSupportedException(); }
         }
 
+        /// <summary>
+        /// Vrací, zda při tomto tahu došlo k přeskočení nepřátelského kamene. Pro třídu CompoundMove vrací vždy true.
+        /// </summary>
         public bool IsCapture
         {
             get { return true; }
             set { return; }
         }
 
+        /// <summary>
+        /// Vrací, zda jde o tah dámou
+        /// </summary>
         public bool KingMove
         {
             get { return Moves[0].KingMove; }
         }
 
+        /// <summary>
+        /// Vrací, zda jde o zpětný tah (při listování historií hry)
+        /// </summary>
         public bool Reversed { get; private set; }
 
         GameField IMove.Capture
@@ -46,11 +70,17 @@ namespace GothicCheckers
             set { return; }
         }
 
+        /// <summary>
+        /// Vrací, zda při tahu došlo k upgrade kamene na dámu.
+        /// </summary>
         public bool IsUpgrade
         {
             get { return Moves.Last().IsUpgrade; }
         }
 
+        /// <summary>
+        /// Vrací délku tahu, tedy počet podtahů.
+        /// </summary>
         public int Length
         {
             get { return Moves.Count; }
@@ -68,11 +98,19 @@ namespace GothicCheckers
             AddMove(firstMove);
         }
 
+        /// <summary>
+        /// Přidá podtah do složeného tahu.
+        /// </summary>
+        /// <param name="move"></param>
         public void AddMove(SimpleMove move)
         {
             Moves.Add(move);
         }
 
+        /// <summary>
+        /// Vytvoří zpětný tah
+        /// </summary>
+        /// <returns></returns>
         public IMove Reverse()
         {
             CompoundMove revMove = new CompoundMove();

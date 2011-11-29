@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<GothicCheckers Version="1.0" FormatVersion="1.2">
+  <GameSettings>
+    <Difficulty White="0" Black="0" />
+    <Control White="Human" Black="Human" />
+  </GameSettings>
+  <Moves>
+    <Move Player="White" From="A2" To="A3" KingMove="False" />
+    <Move Player="Black" From="A7" To="A6" KingMove="False" />
+    <Move Player="White" From="A3" To="B3" KingMove="False" />
+    <Move Player="Black" From="A6" To="B6" KingMove="False" />
+    <Move Player="White" From="B3" To="C3" KingMove="False" />
+    <Move Player="Black" From="B6" To="C6" KingMove="False" />
+    <Move Player="White" From="C2" To="D3" KingMove="False" />
+    <Move Player="Black" From="C6" To="D6" KingMove="False" />
+    <Move Player="White" From="D3" To="E3" KingMove="False" />
+    <Move Player="Black" From="D6" To="E6" KingMove="False" />
+    <Move Player="White" From="E3" To="F3" KingMove="False" />
+    <Move Player="Black" From="E6" To="F6" KingMove="False" />
+    <Move Player="White" From="F3" To="G3" KingMove="False" />
+    <Move Player="Black" From="F6" To="G6" KingMove="False" />
+    <Move Player="White" From="G3" To="H3" KingMove="False" />
+    <Move Player="Black" From="G6" To="H6" KingMove="False" />
+    <Move Player="White" From="H3" To="G3" KingMove="False" />
+    <Move Player="Black" From="H6" To="G6" KingMove="False" />
+    <Move Player="White" From="G3" To="F3" KingMove="False" />
+    <Move Player="Black" From="G6" To="F6" KingMove="False" />
+    <Move Player="White" From="F3" To="E3" KingMove="False" />
+    <Move Player="Black" From="F6" To="E6" KingMove="False" />
+    <Move Player="White" From="E3" To="D3" KingMove="False" />
+    <Move Player="Black" From="E6" To="D6" KingMove="False" />
+    <Move Player="White" From="C3" To="B3" KingMove="False" />
+    <Move Player="Black" From="D6" To="C6" KingMove="False" />
+    <Move Player="White" From="B3" To="A3" KingMove="False" />
+    <Move Player="Black" From="C6" To="B6" KingMove="False" />
+    <Move Player="White" From="A3" To="B3" KingMove="False" />
+  </Moves>
+</GothicCheckers>

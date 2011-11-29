@@ -1,0 +1,115 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<GothicCheckers Version="1.0" FormatVersion="1.2">
+  <GameSettings>
+    <Difficulty White="0" Black="0" />
+    <Control White="Human" Black="Human" />
+  </GameSettings>
+  <Moves>
+    <Move Player="White" From="B2" To="B3" KingMove="False" />
+    <Move Player="Black" From="B7" To="B6" KingMove="False" />
+    <Move Player="White" From="B3" To="B4" KingMove="False" />
+    <Move Player="Black" From="B6" To="B5" KingMove="False" />
+    <Move Player="White" From="B4" To="B6" KingMove="False">
+      <Capture Position="B5" Piece="Normal" />
+    </Move>
+    <Move Player="Black" From="A7" To="C5" KingMove="False">
+      <Capture Position="B6" Piece="Normal" />
+    </Move>
+    <Move Player="White" From="C2" To="C3" KingMove="False" />
+    <Move Player="Black" From="C5" To="C4" KingMove="False" />
+    <Move Player="White" From="C3" To="C5" KingMove="False">
+      <Capture Position="C4" Piece="Normal" />
+    </Move>
+    <Move Player="Black" From="C7" To="C6" KingMove="False" />
+    <Move Player="White" From="C5" To="C7" KingMove="False">
+      <Capture Position="C6" Piece="Normal" />
+    </Move>
+    <Move Player="Black" From="D7" To="B7" KingMove="False">
+      <Capture Position="C7" Piece="Normal" />
+    </Move>
+    <Move Player="White" From="A2" To="B3" KingMove="False" />
+    <Move Player="Black" From="B7" To="B6" KingMove="False" />
+    <Move Player="White" From="B3" To="B4" KingMove="False" />
+    <Move Player="Black" From="B6" To="B5" KingMove="False" />
+    <Move Player="White" From="B4" To="B6" KingMove="False">
+      <Capture Position="B5" Piece="Normal" />
+    </Move>
+    <Move Player="Black" From="B8" To="B7" KingMove="False" />
+    <Move Player="White" From="B6" To="B8" KingMove="False">
+      <Capture Position="B7" Piece="Normal" />
+    </Move>
+    <Move Player="Black" From="C8" To="C7" KingMove="False" />
+    <Move Player="White" From="B8" To="F4" KingMove="True">
+      <Capture Position="C7" Piece="Normal" />
+    </Move>
+    <Move Player="Black" From="E7" To="E6" KingMove="False" />
+    <Move Player="White" From="E2" To="E3" KingMove="False" />
+    <Move Player="Black" From="E6" To="E5" KingMove="False" />
+    <Move Player="White" From="F4" To="D6" KingMove="True">
+      <Capture Position="E5" Piece="Normal" />
+    </Move>
+    <Move Player="Black" From="D8" To="D7" KingMove="False" />
+    <Move Player="White" From="D6" To="D8" KingMove="True">
+      <Capture Position="D7" Piece="Normal" />
+    </Move>
+    <Move Player="Black" From="E8" To="C8" KingMove="False">
+      <Capture Position="D8" Piece="King" />
+    </Move>
+    <Move Player="White" From="E3" To="D4" KingMove="False" />
+    <Move Player="Black" From="C8" To="D7" KingMove="False" />
+    <Move Player="White" From="D4" To="D5" KingMove="False" />
+    <Move Player="Black" From="D7" To="D6" KingMove="False" />
+    <Move Player="White" From="D5" To="D7" KingMove="False">
+      <Capture Position="D6" Piece="Normal" />
+    </Move>
+    <Move Player="Black" From="F7" To="E7" KingMove="False" />
+    <Move Player="White" From="D7" To="F7" KingMove="False">
+      <Capture Position="E7" Piece="Normal" />
+    </Move>
+    <Move Player="Black" From="F8" To="F6" KingMove="False">
+      <Capture Position="F7" Piece="Normal" />
+    </Move>
+    <Move Player="White" From="F2" To="F3" KingMove="False" />
+    <Move Player="Black" From="F6" To="F5" KingMove="False" />
+    <Move Player="White" From="F3" To="F4" KingMove="False" />
+    <Move Player="Black" From="F5" To="F3" KingMove="False">
+      <Capture Position="F4" Piece="Normal" />
+    </Move>
+    <Move Player="White" From="G2" To="E4" KingMove="False">
+      <Capture Position="F3" Piece="Normal" />
+    </Move>
+    <Move Player="Black" From="G7" To="F6" KingMove="False" />
+    <Move Player="White" From="E4" To="E5" KingMove="False" />
+    <Move Player="Black" From="F6" To="D4" KingMove="False">
+      <Capture Position="E5" Piece="Normal" />
+    </Move>
+    <Move Player="White" From="D2" To="D3" KingMove="False" />
+    <Move Player="Black" From="D4" To="D2" KingMove="False">
+      <Capture Position="D3" Piece="Normal" />
+    </Move>
+    <Move Player="White" From="D1" To="D3" KingMove="False">
+      <Capture Position="D2" Piece="Normal" />
+    </Move>
+    <Move Player="Black" From="A8" To="B7" KingMove="False" />
+    <Move Player="White" From="D3" To="D4" KingMove="False" />
+    <Move Player="Black" From="B7" To="C6" KingMove="False" />
+    <Move Player="White" From="D4" To="D5" KingMove="False" />
+    <Move Player="Black" From="C6" To="E4" KingMove="False">
+      <Capture Position="D5" Piece="Normal" />
+    </Move>
+    <Move Player="White" From="F1" To="F2" KingMove="False" />
+    <Move Player="Black" From="E4" To="F3" KingMove="False" />
+    <Move Player="White" From="F2" To="F4" KingMove="False">
+      <Capture Position="F3" Piece="Normal" />
+    </Move>
+    <Move Player="Black" From="H7" To="G6" KingMove="False" />
+    <Move Player="White" From="C1" To="C2" KingMove="False" />
+    <Move Player="Black" From="G8" To="F7" KingMove="False" />
+    <Move Player="White" From="G1" To="F1" KingMove="False" />
+    <Move Player="Black" From="H8" To="H7" KingMove="False" />
+    <Move Player="White" From="C2" To="C3" KingMove="False" />
+    <Move Player="Black" From="F7" To="F6" KingMove="False" />
+    <Move Player="White" From="C3" To="C4" KingMove="False" />
+    <Move Player="Black" From="F6" To="F5" KingMove="False" />
+  </Moves>
+</GothicCheckers>
