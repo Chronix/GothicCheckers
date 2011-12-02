@@ -8,10 +8,10 @@ namespace GothicCheckers.AI
     public static class Evaluator
     {
         private static readonly int[] _valuesPerPiecePerLevel = { 64, 32, 16, 8, 4, 2, 1, 0 }; //z pohledu bileho, level 0 = rada A8-B8-C8...
-        private const int _normalPiecePrice = 50;
-        private const int _kingPiecePrice = 500;
+        private const int _normalPiecePrice = 100;
+        private const int _kingPiecePrice = 130;
 
-        public const int N = 10;
+        private const int _randomRange = 10;
 
         static Random _rand = new Random();
 
@@ -19,18 +19,13 @@ namespace GothicCheckers.AI
         {
             int val = 0;
 
-            for (int i = 0; i < GameBoard.BOARD_SIDE_SIZE; ++i)
-            {
-                val += board.PieceCountOfPlayerAtLevel(PlayerColor.White, i) * _valuesPerPiecePerLevel[i]; //cim blize transformaci na damu, tim lip
-            }
+            int white = board.PieceCountOfPlayerByPieceType(PlayerColor.White, PieceType.Normal) * _normalPiecePrice + board.PieceCountOfPlayerByPieceType(PlayerColor.White, PieceType.King) * _kingPiecePrice;
+            int black = board.PieceCountOfPlayerByPieceType(PlayerColor.Black, PieceType.King) * _kingPiecePrice + board.PieceCountOfPlayerByPieceType(PlayerColor.Black, PieceType.King) * _kingPiecePrice;
 
-            val += board.PieceCountOfPlayerByPieceType(PlayerColor.White, PieceType.Normal) * _normalPiecePrice;
-            val += board.PieceCountOfPlayerByPieceType(PlayerColor.White, PieceType.King) * _kingPiecePrice;
+            val += ((black - white) * 200) / (black + white);
+            val += black - white;
 
-            val *= N * _rand.Next(N);
-
-            if (player == PlayerColor.White) return val;
-            else return -val;
+            return (player == PlayerColor.Black ? val : -val) + _rand.Next(-_randomRange, _randomRange);
         }
     }
 }

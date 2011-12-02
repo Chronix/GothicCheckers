@@ -78,6 +78,14 @@ namespace GothicCheckers
             get { return Moves.Last().IsUpgrade; }
         }
 
+        public bool CaptureSet
+        {
+            get
+            {
+                return Moves.All(sm => sm.CaptureSet);
+            }
+        }
+
         /// <summary>
         /// Vrací délku tahu, tedy počet podtahů.
         /// </summary>

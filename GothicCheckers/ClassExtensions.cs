@@ -20,5 +20,25 @@ namespace GothicCheckers
                 action(list[i]);
             }
         }
+
+        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> coll, Action<T> action) where T : class
+        {
+            foreach (T item in coll)
+            {
+                action(item);
+            }
+
+            return coll;
+        }
+
+        public static IEnumerable<T> ForEach<T, U>(this IEnumerable<T> coll, Action<T, U> action, U arg) where T : class
+        {
+            foreach (T item in coll)
+            {
+                action(item, arg);
+            }
+
+            return coll;
+        }
     }
 }

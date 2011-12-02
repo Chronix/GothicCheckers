@@ -188,6 +188,8 @@ namespace GothicCheckers
 
         public void DoMove(IMove move, bool suppressRedraw = false)
         {
+            if (!move.CaptureSet && !move.Reversed) SetCapture(move);
+
             IEnumerable<int> changedIndices = null;
 
             if (move is SimpleMove) changedIndices = DoSimpleMove((SimpleMove)move);
@@ -220,6 +222,12 @@ namespace GothicCheckers
 
         public void SetCapture(IMove move)
         {
+            if (move is SimpleMove) SetCaptureSimple((SimpleMove)move);
+            else SetCaptureCompound((CompoundMove)move);
+        }
+
+        private void SetCaptureSimple(SimpleMove move)
+        {
             IList<BoardPosition> mid = BoardPosition.GetPositionsBetween(move.FromField, move.ToField);
             move.Capture = mid.Select(bp => this[bp]).Where(f => f.Occupation == GameUtils.OtherPlayer(move.Player)).SingleOrDefault();
 
@@ -228,6 +236,13 @@ namespace GothicCheckers
                 move.Capture = move.Capture.Copy();
                 move.IsCapture = true;
             }
+
+            move.CaptureSet = true;
+        }
+
+        private void SetCaptureCompound(CompoundMove move)
+        {
+            foreach (var sm in move.Moves) SetCaptureSimple(sm);
         }
 
         private IEnumerable<int> DoSimpleMove(SimpleMove move)
@@ -270,7 +285,6 @@ namespace GothicCheckers
 
             foreach (var simpleMove in move.Moves)
             {
-                SetCapture(simpleMove);
                 changedIndices.AddRange(DoSimpleMove(simpleMove));
             }
 

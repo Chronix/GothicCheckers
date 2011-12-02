@@ -174,6 +174,11 @@ namespace GothicCheckers
             {
                 get { throw new NotImplementedException(); }
             }
+
+            bool IMove.CaptureSet
+            {
+                get { throw new NotImplementedException(); }
+            }
             #endregion
 
             public static readonly InitialGameState Instance = new InitialGameState();

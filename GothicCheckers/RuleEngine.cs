@@ -106,7 +106,7 @@ namespace GothicCheckers
                 int longest = 0;
 
                 forcedMoves.ForEach(mv => { if (mv.Length > longest) longest = mv.Length; });
-                return forcedMoves.Where(mv => mv.Length == longest);
+                return forcedMoves.Where(mv => mv.Length == longest).ForEach<IMove, GameBoard>(SetMoveCaptures, board);
             }
 
             return idleMoves;
@@ -241,6 +241,21 @@ namespace GothicCheckers
             }
 
             return added;
+        }
+
+        private static void SetMoveCaptures(IMove move, GameBoard board)
+        {
+            //if (move is SimpleMove)
+            //{
+            //    board.SetCapture(move);
+            //}
+            //else
+            //{
+            //    foreach (SimpleMove sm in ((CompoundMove)move).Moves)
+            //    {
+            //        board.SetCapture(sm);
+            //    }
+            //}
         }
     }
 }

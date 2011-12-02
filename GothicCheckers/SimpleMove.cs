@@ -26,6 +26,8 @@ namespace GothicCheckers
 
         public bool IsCapture { get; set; }
 
+        public bool CaptureSet { get; internal set; }
+
         public bool KingMove { get; private set; }
 
         public int Length
@@ -51,6 +53,7 @@ namespace GothicCheckers
         {
             SimpleMove rev = new SimpleMove(Player, ToField, FromField, KingMove, IsCapture) { Reversed = true };
             rev.Capture = Capture != null ? Capture.Copy() : null;
+            rev.CaptureSet = CaptureSet;
             return rev;
         }
 

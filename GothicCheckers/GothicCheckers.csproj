@@ -58,6 +58,7 @@
     </ApplicationDefinition>
     <Compile Include="AI\AIEngine.cs" />
     <Compile Include="AI\AIState.cs" />
+    <Compile Include="AI\Minimax.cs" />
     <Compile Include="AI\MinimaxAB.cs" />
     <Compile Include="AI\Evaluator.cs" />
     <Compile Include="App.xaml.cs">

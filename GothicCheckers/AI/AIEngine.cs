@@ -71,7 +71,7 @@ namespace GothicCheckers.AI
             }
         }
 
-        protected virtual void OnBestMoveChosen()
+        protected void OnBestMoveChosen()
         {
             if (BestMoveChosen != null) BestMoveChosen(this, EventArgs.Empty);
         }
@@ -93,6 +93,11 @@ namespace GothicCheckers.AI
 
             CTS = null;
             _task = null;
+        }
+
+        protected void CheckForStop()
+        {
+            CTS.Token.ThrowIfCancellationRequested();
         }
 
         protected abstract IMove GetBestMove(object oState);

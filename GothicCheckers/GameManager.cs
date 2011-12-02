@@ -61,7 +61,7 @@ namespace GothicCheckers
         {
             History = new GameHistory();
             _board = new GameBoard();
-            _aiEngine = new MinimaxAB();
+            _aiEngine = new Minimax();
 
             _aiEngine.BestMoveChosen += new EventHandler(_aiEngine_BestMoveChosen);
 
@@ -117,6 +117,7 @@ namespace GothicCheckers
         {
             for (int i = 1; i < History.Count; ++i)
             {
+                _board.SetCapture(History[i].Move);
                 _board.DoMove(History[i].Move, true);
             }
 
