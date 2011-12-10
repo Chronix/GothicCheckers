@@ -7,25 +7,45 @@ namespace GothicCheckers.AI
 {
     public static class Evaluator
     {
-        private static readonly int[] _valuesPerPiecePerLevel = { 64, 32, 16, 8, 4, 2, 1, 0 }; //z pohledu bileho, level 0 = rada A8-B8-C8...
+        private static readonly int[] _whiteValuesPerPiecePerLevel;
+        private static readonly int[] _blackValuesPerPiecePerLevel;
+
         private const int _normalPiecePrice = 100;
         private const int _kingPiecePrice = 130;
 
-        private const int _randomRange = 10;
+        private const int _randomRange = 5;
 
         static Random _rand = new Random();
 
+        static Evaluator()
+        {
+            _whiteValuesPerPiecePerLevel = new int[] { 1000, 80, 60, 40, 30, 20, 10, 0 }; //level 0 = rada A8-B8-C8...
+            _blackValuesPerPiecePerLevel = new int[] { 0, 10, 20, 30, 40, 60, 80, 1000 };
+        }
+
         public static int Evaluate(GameBoard board, PlayerColor player) //zatim zcela zakladni funkce, aby pocitac netahl uplne nahodne
         {
-            int val = 0;
+            int blackScore = 0;
+            int whiteScore = 0;
 
-            int white = board.PieceCountOfPlayerByPieceType(PlayerColor.White, PieceType.Normal) * _normalPiecePrice + board.PieceCountOfPlayerByPieceType(PlayerColor.White, PieceType.King) * _kingPiecePrice;
-            int black = board.PieceCountOfPlayerByPieceType(PlayerColor.Black, PieceType.King) * _kingPiecePrice + board.PieceCountOfPlayerByPieceType(PlayerColor.Black, PieceType.King) * _kingPiecePrice;
+            for (int i = 0; i < GameBoard.BOARD_SIDE_SIZE; ++i)
+            {
+                int cnt = board.PieceCountOfPlayerAtLevel(PlayerColor.Black, i);
+                blackScore += cnt * _blackValuesPerPiecePerLevel[i]; //cim blize transformaci na damu, tim lip
+                cnt = board.PieceCountOfPlayerAtLevel(PlayerColor.White, i);
+                whiteScore += cnt * _whiteValuesPerPiecePerLevel[i];
+            }
 
-            val += ((black - white) * 200) / (black + white);
-            val += black - white;
+            whiteScore += board.PieceCountOfPlayerByPieceType(PlayerColor.White, PieceType.Normal) * _normalPiecePrice;
+            whiteScore += board.PieceCountOfPlayerByPieceType(PlayerColor.White, PieceType.King) * _kingPiecePrice;
 
-            return (player == PlayerColor.Black ? val : -val) + _rand.Next(-_randomRange, _randomRange);
+            blackScore += board.PieceCountOfPlayerByPieceType(PlayerColor.Black, PieceType.Normal) * _normalPiecePrice;
+            blackScore += board.PieceCountOfPlayerByPieceType(PlayerColor.Black, PieceType.King) * _kingPiecePrice;
+
+            int score = (blackScore - whiteScore) * 200;
+            score += _rand.Next(-_randomRange, _randomRange);
+
+            return player == PlayerColor.Black ? score : -score;
         }
     }
 }

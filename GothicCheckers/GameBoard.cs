@@ -105,8 +105,14 @@ namespace GothicCheckers
         {
             int startIndex = level * BOARD_SIDE_SIZE;
             int endIndex = startIndex + BOARD_SIDE_SIZE;
+            int count = 0;
 
-            return _fields.Where((f, i) => i >= startIndex && i < endIndex).Where(f => f.Occupation == player).Count();
+            for (; startIndex < endIndex; ++startIndex)
+            {
+                if (this[startIndex].Occupation == player) count++;
+            }
+
+            return count;
         }
 
         public int PieceCountOfPlayerByPieceType(PlayerColor player, PieceType type)

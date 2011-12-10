@@ -9,20 +9,16 @@ namespace GothicCheckers.AI
 {
     public class Minimax : AIEngine
     {
-        private int _bestValue;
-        private IMove _bestMove;
-        private readonly object _lock = new object();
-
         protected override IMove GetBestMove(object oState)
         {
-            _bestMove = null;
+            IMove bestMove = null;
             AIState state = oState as AIState;
-            int value = Compute(state.Board, state.Player, state.Depth, state.Depth);
-            Debug.WriteLine("Best Move: {0} Value: {1}", _bestMove.ToString(), value.ToString());
-            return _bestMove;
+            int value = Compute(ref bestMove, state.Board, state.Player, state.Depth, state.Depth);
+            Debug.WriteLine("Best Move: {0} Value: {1}", bestMove.ToString(), value.ToString());
+            return bestMove;
         }
 
-        private int Compute(GameBoard board, PlayerColor currentPlayer, int startDepth, int depth)
+        private int Compute(ref IMove bestMove, GameBoard board, PlayerColor currentPlayer, int startDepth, int depth)
         {
             CheckForStop();
 
@@ -32,31 +28,31 @@ namespace GothicCheckers.AI
 
             if (moves.Count() == 0) return Evaluator.Evaluate(board, currentPlayer);
 
-            _bestValue = int.MinValue;
+            int bestValue = int.MinValue;
             PlayerColor opponent = GameUtils.OtherPlayer(currentPlayer);
             GameBoard boardCopy = board.Copy();
 
             foreach (var move in moves)
             {
                 boardCopy.DoMove(move, true);
-                int moveValue = -Compute(boardCopy, opponent, startDepth, depth - 1);
+                int moveValue = -Compute(ref bestMove, boardCopy, opponent, startDepth, depth - 1);
                 IMove revMove = move.Reverse();
                 boardCopy.DoMove(revMove, true);
 
                 if (depth == startDepth)
                 {
-                    Debug.WriteLine("Move: {0} Value: {1}", move.ToString(), moveValue.ToString());
+                    Trace.WriteLine(string.Format("Move: {0} Value: {1}", move.ToString(), moveValue.ToString()));
 
-                    if (_bestMove == null || moveValue > _bestValue)
+                    if (bestMove == null || moveValue > bestValue)
                     {
-                        _bestMove = move;
+                        bestMove = move;
                     }
                 }
 
-                _bestValue = Math.Max(_bestValue, moveValue);
+                bestValue = Math.Max(bestValue, moveValue);
             }
 
-            return _bestValue;
+            return bestValue;
         }
     }
 }
