@@ -24,4 +24,16 @@ namespace GothicCheckers
             Player = player;
         }
     }
+
+    public class MoveDoneEventArgs : EventArgs
+    {
+        public IMove Move { get; private set; }
+        public bool SuggestingMove { get; private set; }
+
+        public MoveDoneEventArgs(IMove move, bool suggesting)
+        {
+            Move = move;
+            SuggestingMove = suggesting;
+        }
+    }
 }

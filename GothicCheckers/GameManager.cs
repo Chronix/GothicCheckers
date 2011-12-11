@@ -25,9 +25,10 @@ namespace GothicCheckers
 
         public event EventHandler<PlayerEventArgs> GameEnded;
         public event EventHandler<PlayerEventArgs> PlayersSwapped;
-        public event EventHandler MoveDone;
+        public event EventHandler<MoveDoneEventArgs> MoveDone;
 
         private bool _disposed;
+        private bool _suggestingMove;
 
         public GameReplayState ReplayState
         {
@@ -150,6 +151,12 @@ namespace GothicCheckers
             }
         }
 
+        public void SuggestMove()
+        {
+            _suggestingMove = true;
+            _aiEngine.ComputeBestMove(_board, CurrentPlayer, 3);
+        }
+
         private void Dispose(bool disposing)
         {
             if (disposing)
@@ -160,6 +167,13 @@ namespace GothicCheckers
 
         private void _aiEngine_BestMoveChosen(object sender, EventArgs e)
         {
+            if (_suggestingMove)
+            {
+                OnMoveDone();
+                _suggestingMove = false;
+                return;
+            }
+
             _board.DoMove(_aiEngine.BestMove);
             History.Add(new GameHistoryItem(_aiEngine.BestMove));
             SwapPlayers();
@@ -195,7 +209,7 @@ namespace GothicCheckers
 
         private void OnMoveDone()
         {
-            if (MoveDone != null) MoveDone(this, EventArgs.Empty);
+            if (MoveDone != null) MoveDone(this, new MoveDoneEventArgs(_aiEngine.BestMove, _suggestingMove));
         }
     }
 }

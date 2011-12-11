@@ -268,6 +268,24 @@ namespace GothicCheckers.GUI.Localization {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Best Move Suggestion.
+        /// </summary>
+        public static string MainWindow_BestMoveCaption {
+            get {
+                return ResourceManager.GetString("MainWindow_BestMoveCaption", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Best Move: {0}.
+        /// </summary>
+        public static string MainWindow_BestMoveText {
+            get {
+                return ResourceManager.GetString("MainWindow_BestMoveText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Draw!.
         /// </summary>
         public static string MainWindow_Draw {

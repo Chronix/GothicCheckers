@@ -7,33 +7,25 @@ namespace GothicCheckers.AI
 {
     public static class Evaluator
     {
-        private static readonly int[] _whiteValuesPerPiecePerLevel;
-        private static readonly int[] _blackValuesPerPiecePerLevel;
+        private static readonly int[] _whitePieceValuesPerLevel = { 1000, 80, 60, 40, 30, 20, 10, 0 };
+        private static readonly int[] _blackPieceValuesPerLevel = { 0, 10, 20, 30, 40, 60, 80, 1000 };
 
         private const int _normalPiecePrice = 100;
         private const int _kingPiecePrice = 130;
 
         private const int _randomRange = 5;
 
-        static Random _rand = new Random();
+        private static Random _rand = new Random();
 
-        static Evaluator()
-        {
-            _whiteValuesPerPiecePerLevel = new int[] { 1000, 80, 60, 40, 30, 20, 10, 0 }; //level 0 = rada A8-B8-C8...
-            _blackValuesPerPiecePerLevel = new int[] { 0, 10, 20, 30, 40, 60, 80, 1000 };
-        }
-
-        public static int Evaluate(GameBoard board, PlayerColor player) //zatim zcela zakladni funkce, aby pocitac netahl uplne nahodne
+        public static int Evaluate(GameBoard board, PlayerColor player)
         {
             int blackScore = 0;
             int whiteScore = 0;
 
             for (int i = 0; i < GameBoard.BOARD_SIDE_SIZE; ++i)
             {
-                int cnt = board.PieceCountOfPlayerAtLevel(PlayerColor.Black, i);
-                blackScore += cnt * _blackValuesPerPiecePerLevel[i]; //cim blize transformaci na damu, tim lip
-                cnt = board.PieceCountOfPlayerAtLevel(PlayerColor.White, i);
-                whiteScore += cnt * _whiteValuesPerPiecePerLevel[i];
+                blackScore += board.PieceCountOfPlayerAtLevel(PlayerColor.Black, i) * _blackPieceValuesPerLevel[i]; //cim blize transformaci na damu, tim lip
+                whiteScore += board.PieceCountOfPlayerAtLevel(PlayerColor.White, i) * _whitePieceValuesPerLevel[i];
             }
 
             whiteScore += board.PieceCountOfPlayerByPieceType(PlayerColor.White, PieceType.Normal) * _normalPiecePrice;

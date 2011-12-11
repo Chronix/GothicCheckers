@@ -210,4 +210,10 @@
   <data name="MainWindow_Victory" xml:space="preserve">
     <value>Victory!</value>
   </data>
+  <data name="MainWindow_BestMoveCaption" xml:space="preserve">
+    <value>Best Move Suggestion</value>
+  </data>
+  <data name="MainWindow_BestMoveText" xml:space="preserve">
+    <value>Best Move: {0}</value>
+  </data>
 </root>

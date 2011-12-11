@@ -37,7 +37,7 @@ namespace GothicCheckers.GUI
 
             _manager.GameEnded += new EventHandler<PlayerEventArgs>(_manager_GameEnded);
             _manager.PlayersSwapped += new EventHandler<PlayerEventArgs>(_manager_PlayersSwapped);
-            _manager.MoveDone += new EventHandler(_manager_MoveDone);
+            _manager.MoveDone += new EventHandler<MoveDoneEventArgs>(_manager_MoveDone);
 
             SaveLoadManager.OldFormatLoading += new EventHandler(SaveLoadManager_OldFormatLoading);
 
@@ -88,7 +88,7 @@ namespace GothicCheckers.GUI
 
                 _manager.PlayHistory();
                 MainGameBoard.FullRedraw();
-                //_manager.History.Refresh();
+                lbHistory.ScrollIntoView(lbHistory.Items[lbHistory.Items.Count - 1]);
             }
         }
 
@@ -155,6 +155,11 @@ namespace GothicCheckers.GUI
         private void Command_Execute_Help(object sender, ExecutedRoutedEventArgs args)
         {
             string commParam = args.Parameter.ToString();
+
+            if (commParam == "suggest")
+            {
+                _manager.SuggestMove();
+            }
         }
         #endregion
 
@@ -256,9 +261,16 @@ namespace GothicCheckers.GUI
             SetCurrentPlayerStatusText(e.Player);
         }
 
-        private void _manager_MoveDone(object sender, EventArgs e)
+        private void _manager_MoveDone(object sender, MoveDoneEventArgs e)
         {
-            lbHistory.ScrollIntoView(lbHistory.Items[lbHistory.Items.Count - 1]);
+            if (e.SuggestingMove)
+            {
+                MessageBox.Show(string.Format(Localization.MainWindowStrings.MainWindow_BestMoveText, e.Move.ToString()), Localization.MainWindowStrings.MainWindow_BestMoveCaption, MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            else
+            {
+                lbHistory.ScrollIntoView(lbHistory.Items[lbHistory.Items.Count - 1]);
+            }
         }
 
         private void SaveLoadManager_OldFormatLoading(object sender, EventArgs e)
@@ -273,6 +285,11 @@ namespace GothicCheckers.GUI
                 case PlayerColor.White: tbCurrentPlayer.Text = Localization.MainWindowStrings.MainWindow_Status_CurrentPlayer + " " + Localization.MainWindowStrings.MainWindow_Player_White; break;
                 case PlayerColor.Black: tbCurrentPlayer.Text = Localization.MainWindowStrings.MainWindow_Status_CurrentPlayer + " " + Localization.MainWindowStrings.MainWindow_Player_Black; break;
             }
+        }
+
+        private void SuggestMove()
+        {
+            
         }
     }
 }

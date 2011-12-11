@@ -49,7 +49,7 @@ namespace GothicCheckers
                 SimpleMove move = new SimpleMove(boardCopy[_root.Position].Occupation, _root.Position, pos, boardCopy[_root.Position].Piece == PieceType.King);
                 boardCopy.SetCapture(move);
                 boardCopy.DoMove(move, true);
-                _root.Children.Add(new JumpTreeNode { Board = boardCopy, Depth = _root.Depth + 1, Parent = _root, Position = pos, CheckAgain = true });
+                _root.Children.Add(new JumpTreeNode { Board = boardCopy, Depth = _root.Depth + 1, Parent = _root, Position = pos, CheckAgain = !move.IsUpgrade });
                 ++NodeCount;
             }
         }
@@ -62,7 +62,7 @@ namespace GothicCheckers
                 SimpleMove move = new SimpleMove(board[targetNode.Position].Occupation, targetNode.Position, pos, board[targetNode.Position].Piece == PieceType.King, true);
                 board.SetCapture(move);
                 board.DoMove(move, true);
-                targetNode.Children.Add(new JumpTreeNode { Board = board, Depth = targetNode.Depth + 1, Parent = targetNode, Position = pos, CheckAgain = true });
+                targetNode.Children.Add(new JumpTreeNode { Board = board, Depth = targetNode.Depth + 1, Parent = targetNode, Position = pos, CheckAgain = !move.IsUpgrade });
                 ++NodeCount;
             }
         }
