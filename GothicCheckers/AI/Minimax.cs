@@ -13,8 +13,15 @@ namespace GothicCheckers.AI
         {
             IMove bestMove = null;
             AIState state = oState as AIState;
+#if PERFTEST
+            Stopwatch sw = Stopwatch.StartNew();
+#endif
             int value = Compute(ref bestMove, state.Board, state.Player, state.Depth, state.Depth);
-            Debug.WriteLine("Best Move: {0} Value: {1}", bestMove.ToString(), value.ToString());
+#if PERFTEST
+            sw.Stop();
+            Trace.WriteLine(string.Format("Total computation time: {0} ms", sw.ElapsedMilliseconds));
+#endif
+            Trace.WriteLine(string.Format("Best Move: {0} Value: {1}", bestMove.ToString(), value.ToString()));
             return bestMove;
         }
 
@@ -25,6 +32,8 @@ namespace GothicCheckers.AI
             if (depth == 0) return Evaluator.Evaluate(board, currentPlayer);
 
             var moves = RuleEngine.GetAllMovesForPlayer(board, currentPlayer);
+            
+            CheckForStop();
 
             if (moves.Count() == 0) return Evaluator.Evaluate(board, currentPlayer);
 
@@ -32,12 +41,16 @@ namespace GothicCheckers.AI
             PlayerColor opponent = GameUtils.OtherPlayer(currentPlayer);
             GameBoard boardCopy = board.Copy();
 
+            CheckForStop();
+
             foreach (var move in moves)
             {
+                CheckForStop();
                 boardCopy.DoMove(move, true);
                 int moveValue = -Compute(ref bestMove, boardCopy, opponent, startDepth, depth - 1);
                 IMove revMove = move.Reverse();
                 boardCopy.DoMove(revMove, true);
+                CheckForStop();
 
                 if (depth == startDepth)
                 {

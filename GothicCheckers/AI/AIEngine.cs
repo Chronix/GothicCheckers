@@ -80,10 +80,15 @@ namespace GothicCheckers.AI
         {
             if (_task != null)
             {
-                if (_task.Status == TaskStatus.Running)
+                if (_task.Status == TaskStatus.Running && CTS != null)
                 {
                     CTS.Cancel(true);
-                    while (_task.Status == TaskStatus.Running) ;
+
+                    try
+                    {
+                        _task.Wait();
+                    }
+                    catch (AggregateException) { }
                 }
 
                 _task.Dispose();
